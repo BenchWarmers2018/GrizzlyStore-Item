@@ -1,0 +1,1 @@
+INSERT INTO Categories (id_Category, category_Name, category_Description)
