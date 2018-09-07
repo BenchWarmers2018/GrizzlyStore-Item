@@ -39,7 +39,29 @@ public class SeedController {
                 " adorable collection of bear themed toys!");
         Category c6 = new Category(6, "Technology", "If you can't bear to live " +
                 "a life without technology or electronics, fill your void here!");
-        Item i1 = new Item(c1, "Teddy", "Cutest teddy bear in the world", "<INSERT URL HERE>",
+        Item i1 = new Item(c1, "Teddy1", "Cutest teddy bear in the world", "<INSERT URL HERE>",
+                10, 0);
+        Item i2 = new Item(c2, "Teddy2", "Cutest teddy bear in Asia", "<INSERT URL HERE>",
+                10, 0);
+        Item i3 = new Item(c3, "Teddy3", "Cutest teddy bear in Europe", "<INSERT URL HERE>",
+                10, 0);
+        Item i4 = new Item(c4, "Teddy4", "Cutest teddy bear in Australia", "<INSERT URL HERE>",
+                10, 0);
+        Item i5 = new Item(c5, "Teddy5", "Cutest teddy bear in America", "<INSERT URL HERE>",
+                10, 0);
+        Item i6 = new Item(c6, "Teddy6", "Cutest teddy bear in Antartica", "<INSERT URL HERE>",
+                10, 0);
+        Item i7 = new Item(c1, "Teddy7", "Cutest teddy bear in the Artic", "<INSERT URL HERE>",
+                10, 0);
+        Item i8 = new Item(c2, "Teddy8", "Cutest teddy bear in Pluto", "<INSERT URL HERE>",
+                10, 0);
+        Item i9 = new Item(c3, "Teddy9", "Cutest teddy bear in Saturn", "<INSERT URL HERE>",
+                10, 0);
+        Item i10 = new Item(c4, "Teddy10", "Cutest teddy bear in Venus", "<INSERT URL HERE>",
+                10, 0);
+        Item i11 = new Item(c5, "Teddy11", "Cutest teddy bear in Mars", "<INSERT URL HERE>",
+                10, 0);
+        Item i12 = new Item(c6, "Teddy12", "Cutest teddy bear in Mercury", "<INSERT URL HERE>",
                 10, 0);
 
 
@@ -51,8 +73,20 @@ public class SeedController {
         categoryRepository.save(c5);
         categoryRepository.save(c6);
         itemRepository.save(i1);
+        itemRepository.save(i2);
+        itemRepository.save(i3);
+        itemRepository.save(i4);
+        itemRepository.save(i5);
+        itemRepository.save(i6);
+        itemRepository.save(i7);
+        itemRepository.save(i8);
+        itemRepository.save(i9);
+        itemRepository.save(i10);
+        itemRepository.save(i11);
+        itemRepository.save(i12);
 
-        return c1.toString();
+
+        return "Successfully saved seed data of items and categories to database";
     }
 
 
