@@ -4,18 +4,32 @@ pipeline {
       stage('Build') {
          steps {
             echo 'BUILDING PROJECT!!'
+            withMaven(maven: 'mvn') {
+               sh 'mvn -B -DskipTests clean package'
+            }
          }
       }
       stage('Test') {
          steps {
-            echo 'Testing in process'
+            echo 'Testing in progress'
+            sh 'mvn test'
+         }
+         post {
+            always {
+               junit 'target/surefire-reports/*.xml'
+            }
          }
       }
       stage('Deploy') {
          steps {
             echo 'Deployment in process'
-         }   
+            sh "pwd && cd target"
+            sh 'sudo systemctl stop grizzly-item.service'
+            sh 'sudo rm /etc/init.d/grizzly || true'
+            sh "sudo ln -s grizzlystore-0.0.1-SNAPSHOT.jar /etc/init.d/grizzly-item"
+            sh "sudo systemctl start grizzly-item.service"
+            /* sh 'mvn spring-boot:run'  java -jar grizzly-store-spring-1.0-SNAPSHOT.jar*/
+         }
       }
    }
 }
-
