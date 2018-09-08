@@ -1,27 +1,36 @@
-package com.benchwarmers.grads.grizzlystoreitem;
+package com.benchwarmers.grads.grizzlystoreitem.entities;
 
 import javax.persistence.*;
 
 import org.hibernate.annotations.CreationTimestamp;
 
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 @Entity
+@Table(name = "category")
 public class Category {
-    @Id
-    private int id_Category;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id_Category", nullable = false)
+    private Integer id_Category;
+
+    @Column(name = "category_Name", nullable = false)
     private String category_Name;
 
+    @Column(name = "category_Description", nullable = false)
     private String category_Description;
 
+
     @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private Set<Item> items;
+    private List<Item> items= new ArrayList<>();
 
     @CreationTimestamp
-    @Column(name = "last_Modified", nullable = false)
-    private Date last_Modified;
+    @Column(name = "last_modified", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date last_modified;
 
     public Category() {
     }
@@ -53,11 +62,15 @@ public class Category {
     }
 
 
-    public Set<Item> getItems() {
+    public List<Item> getItems() {
         return items;
     }
 
-    public void setItems(Set<Item> items) {
+    public void setItems(List<Item> items) {
         this.items = items;
+    }
+
+    public Date getLast_modified() {
+        return last_modified;
     }
 }

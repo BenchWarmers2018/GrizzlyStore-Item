@@ -1,16 +1,15 @@
-package com.benchwarmers.grads.grizzlystoreitem;
+package com.benchwarmers.grads.grizzlystoreitem.controllers;
 
+import com.benchwarmers.grads.grizzlystoreitem.entities.Category;
+import com.benchwarmers.grads.grizzlystoreitem.entities.Item;
+import com.benchwarmers.grads.grizzlystoreitem.repositories.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.benchwarmers.grads.grizzlystoreitem.Category;
-import com.benchwarmers.grads.grizzlystoreitem.CategoryRepository;
-import com.benchwarmers.grads.grizzlystoreitem.Item;
-import com.benchwarmers.grads.grizzlystoreitem.ItemRepository;
+import com.benchwarmers.grads.grizzlystoreitem.repositories.CategoryRepository;
 
 @Controller
 @RequestMapping(path = "/test")

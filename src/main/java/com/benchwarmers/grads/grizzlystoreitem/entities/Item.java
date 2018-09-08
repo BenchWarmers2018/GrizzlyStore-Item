@@ -1,5 +1,6 @@
-package com.benchwarmers.grads.grizzlystoreitem;
+package com.benchwarmers.grads.grizzlystoreitem.entities;
 
+import com.benchwarmers.grads.grizzlystoreitem.entities.Category;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -7,23 +8,30 @@ import java.util.Date;
 
 @Entity
 public class Item {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id_Item", nullable = false)
     private Integer id_Item;
 
     @ManyToOne
-    @JoinColumn(name = "item_category_id")
+    @JoinColumn(name = "item_category_id", nullable = false)
     private Category category;
 
+    @Column(name = "item_Name", nullable = false)
     private String item_Name;
 
+    @Column(name = "item_Description", nullable = false)
     private String item_Description;
 
+    @Column(name = "item_Image", nullable = false)
     private String item_Image;
 
+    @Column(name = "item_Price", nullable = false)
     private double item_Price;
 
-    private int item_SalePercentage;
+    @Column(name = "item_SalePercentage", nullable = false)
+    private Integer item_SalePercentage;
 
     @CreationTimestamp
     @Column(name = "last_Modified", nullable = false)
@@ -94,5 +102,9 @@ public class Item {
 
     public void setItem_SalePercentage(int item_SalePercentage) {
         this.item_SalePercentage = item_SalePercentage;
+    }
+
+    public Date getLast_modified() {
+        return last_modified;
     }
 }
