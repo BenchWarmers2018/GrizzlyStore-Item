@@ -1,8 +1,8 @@
 package com.benchwarmers.grads.grizzlystoreitem.entities;
 
-import com.benchwarmers.grads.grizzlystoreitem.entities.Category;
 import org.hibernate.annotations.CreationTimestamp;
 
+import javax.jws.Oneway;
 import javax.persistence.*;
 import java.util.Date;
 
@@ -11,27 +11,27 @@ public class Item {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id_Item", nullable = false)
-    private Integer id_Item;
+    @Column(name = "idItem", nullable = false)
+    private Integer idItem;
 
-    @ManyToOne
-    @JoinColumn(name = "item_category_id", nullable = false)
-    private Category category;
+//    @OneToOne
+//    @JoinColumn(name = "item_category_id", nullable = false)
+//    private Category category;
 
-    @Column(name = "item_Name", nullable = false)
-    private String item_Name;
+    @Column(name = "itemName", nullable = false)
+    private String itemName;
 
-    @Column(name = "item_Description", nullable = false)
-    private String item_Description;
+    @Column(name = "itemDescription", nullable = false)
+    private String itemDescription;
 
-    @Column(name = "item_Image", nullable = false)
-    private String item_Image;
+    @Column(name = "itemImage", nullable = false)
+    private String itemImage;
 
-    @Column(name = "item_Price", nullable = false)
-    private double item_Price;
+    @Column(name = "itemPrice", nullable = false)
+    private double itemPrice;
 
-    @Column(name = "item_SalePercentage", nullable = false)
-    private Integer item_SalePercentage;
+    @Column(name = "itemSalePercentage", nullable = false)
+    private Integer itemSalePercentage;
 
     @CreationTimestamp
     @Column(name = "last_Modified", nullable = false)
@@ -40,68 +40,58 @@ public class Item {
     public Item() {
     }
 
-    public Item(Category category, String item_Name, String item_Description, String item_Image, double item_Price, int item_SalePercentage) {
-        this.category = category;
-        this.item_Name = item_Name;
-        this.item_Description = item_Description;
-        this.item_Image = item_Image;
-        this.item_Price = item_Price;
-        this.item_SalePercentage = item_SalePercentage;
+    public Item(String itemName, String itemDescription, String itemImage, double itemPrice, int itemSalePercentage) {
+        this.itemName = itemName;
+        this.itemDescription = itemDescription;
+        this.itemImage = itemImage;
+        this.itemPrice = itemPrice;
+        this.itemSalePercentage = itemSalePercentage;
     }
 
-    public Integer getId_Item() {
-        return id_Item;
+    public Integer getIdItem() {
+        return idItem;
     }
 
-    //no setter for id_Item required
+    //no setter for idItem required
 
-
-    public Category getCategory() {
-        return category;
+    public String getItemName() {
+        return itemName;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
     }
 
-    public String getItem_Name() {
-        return item_Name;
+    public String getItemDescription() {
+        return itemDescription;
     }
 
-    public void setItem_Name(String item_Name) {
-        this.item_Name = item_Name;
+    public void setItemDescription(String itemDescription) {
+        this.itemDescription = itemDescription;
     }
 
-    public String getItem_Description() {
-        return item_Description;
+    public String getItemImage() {
+        return itemImage;
     }
 
-    public void setItem_Description(String item_Description) {
-        this.item_Description = item_Description;
+    public void setItemImage(String itemImage) {
+        this.itemImage = itemImage;
     }
 
-    public String getItem_Image() {
-        return item_Image;
+    public double getItemPrice() {
+        return itemPrice;
     }
 
-    public void setItem_Image(String item_Image) {
-        this.item_Image = item_Image;
+    public void setItemPrice(double itemPrice) {
+        this.itemPrice = itemPrice;
     }
 
-    public double getItem_Price() {
-        return item_Price;
+    public int getItemSalePercentage() {
+        return itemSalePercentage;
     }
 
-    public void setItem_Price(double item_Price) {
-        this.item_Price = item_Price;
-    }
-
-    public int getItem_SalePercentage() {
-        return item_SalePercentage;
-    }
-
-    public void setItem_SalePercentage(int item_SalePercentage) {
-        this.item_SalePercentage = item_SalePercentage;
+    public void setItemSalePercentage(int itemSalePercentage) {
+        this.itemSalePercentage = itemSalePercentage;
     }
 
     public Date getLast_modified() {
