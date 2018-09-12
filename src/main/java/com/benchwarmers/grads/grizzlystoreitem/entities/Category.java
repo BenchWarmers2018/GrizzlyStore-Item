@@ -14,17 +14,18 @@ public class Category {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id_Category", nullable = false)
-    private Integer id_Category;
+    @Column(name = "idCategory", nullable = false)
+    private Integer idCategory;
 
-    @Column(name = "category_Name", nullable = false)
-    private String category_Name;
+    @Column(name = "categoryName", nullable = false)
+    private String categoryName;
 
-    @Column(name = "category_Description", nullable = false)
-    private String category_Description;
+    @Column(name = "categoryDescription", nullable = false)
+    private String categoryDescription;
 
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinColumn(name = "idCategory")
     private List<Item> items= new ArrayList<>();
 
     @CreationTimestamp
@@ -35,30 +36,30 @@ public class Category {
     public Category() {
     }
 
-    public Category(int id_Category, String category_Name, String category_Description) {
-        this.id_Category = id_Category;
-        this.category_Name = category_Name;
-        this.category_Description = category_Description;
+    public Category(int idCategory, String categoryName, String categoryDescription) {
+        this.idCategory = idCategory;
+        this.categoryName = categoryName;
+        this.categoryDescription = categoryDescription;
     }
 
-    public int getId_Category() {
-        return id_Category;
+    public int getIdCategory() {
+        return idCategory;
     }
 
-    public String getCategory_Name() {
-        return category_Name;
+    public String getCategoryName() {
+        return categoryName;
     }
 
-    public void setCategory_Name(String category_Name) {
-        this.category_Name = category_Name;
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
-    public String getCategory_Description() {
-        return category_Description;
+    public String getCategoryDescription() {
+        return categoryDescription;
     }
 
-    public void setCategory_Description(String category_Description) {
-        this.category_Description = category_Description;
+    public void setCategoryDescription(String categoryDescription) {
+        this.categoryDescription = categoryDescription;
     }
 
 
@@ -70,6 +71,10 @@ public class Category {
         this.items = items;
     }
 
+    public void addItemToList(Item item)
+    {
+        items.add(item);
+    }
     public Date getLast_modified() {
         return last_modified;
     }

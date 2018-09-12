@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.benchwarmers.grads.grizzlystoreitem.repositories.CategoryRepository;
 
+import java.util.ArrayList;
+
 @Controller
 @RequestMapping(path = "/test")
 public class SeedController {
@@ -38,30 +40,40 @@ public class SeedController {
                 " adorable collection of bear themed toys!");
         Category c6 = new Category(6, "Technology", "If you can't bear to live " +
                 "a life without technology or electronics, fill your void here!");
-        Item i1 = new Item(c1, "Teddy1", "Cutest teddy bear in the world", "<INSERT URL HERE>",
+
+        Item i1 = new Item("Teddy1", "Cutest teddy bear in the world", "<INSERT URL HERE>",
                 10, 0);
-        Item i2 = new Item(c2, "Teddy2", "Cutest teddy bear in Asia", "<INSERT URL HERE>",
+        Item i2 = new Item( "Teddy2", "Cutest teddy bear in Asia", "<INSERT URL HERE>",
                 10, 0);
-        Item i3 = new Item(c3, "Teddy3", "Cutest teddy bear in Europe", "<INSERT URL HERE>",
+        Item i3 = new Item( "Teddy3", "Cutest teddy bear in Europe", "<INSERT URL HERE>",
                 10, 0);
-        Item i4 = new Item(c4, "Teddy4", "Cutest teddy bear in Australia", "<INSERT URL HERE>",
+        Item i4 = new Item( "Teddy4", "Cutest teddy bear in Australia", "<INSERT URL HERE>",
                 10, 0);
-        Item i5 = new Item(c5, "Teddy5", "Cutest teddy bear in America", "<INSERT URL HERE>",
+        Item i5 = new Item( "Teddy5", "Cutest teddy bear in America", "<INSERT URL HERE>",
                 10, 0);
-        Item i6 = new Item(c6, "Teddy6", "Cutest teddy bear in Antartica", "<INSERT URL HERE>",
+        Item i6 = new Item( "Teddy6", "Cutest teddy bear in Antartica", "<INSERT URL HERE>",
                 10, 0);
-        Item i7 = new Item(c1, "Teddy7", "Cutest teddy bear in the Artic", "<INSERT URL HERE>",
+        Item i7 = new Item( "Teddy7", "Cutest teddy bear in the Artic", "<INSERT URL HERE>",
                 10, 0);
-        Item i8 = new Item(c2, "Teddy8", "Cutest teddy bear in Pluto", "<INSERT URL HERE>",
+        Item i8 = new Item( "Teddy8", "Cutest teddy bear in Pluto", "<INSERT URL HERE>",
                 10, 0);
-        Item i9 = new Item(c3, "Teddy9", "Cutest teddy bear in Saturn", "<INSERT URL HERE>",
+        Item i9 = new Item( "Teddy9", "Cutest teddy bear in Saturn", "<INSERT URL HERE>",
                 10, 0);
-        Item i10 = new Item(c4, "Teddy10", "Cutest teddy bear in Venus", "<INSERT URL HERE>",
+        Item i10 = new Item( "Teddy10", "Cutest teddy bear in Venus", "<INSERT URL HERE>",
                 10, 0);
-        Item i11 = new Item(c5, "Teddy11", "Cutest teddy bear in Mars", "<INSERT URL HERE>",
+        Item i11 = new Item("Teddy11", "Cutest teddy bear in Mars", "<INSERT URL HERE>",
+                10,0);
+        Item i12 = new Item("Teddy12", "Cutest teddy bear in Mercury", "<INSERT URL HERE>",
                 10, 0);
-        Item i12 = new Item(c6, "Teddy12", "Cutest teddy bear in Mercury", "<INSERT URL HERE>",
-                10, 0);
+
+        c1.addItemToList(i1);
+        c1.addItemToList(i2);
+        c1.addItemToList(i3);
+        c1.addItemToList(i4);
+        c1.addItemToList(i5);
+        c1.addItemToList(i6);
+
+
 
 
 
