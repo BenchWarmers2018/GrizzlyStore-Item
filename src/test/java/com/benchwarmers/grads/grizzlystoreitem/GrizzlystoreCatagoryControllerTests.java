@@ -42,31 +42,23 @@ public class GrizzlystoreCatagoryControllerTests
 
     @Before
     public void setup() {
-        //MockitoAnnotations.initMocks(this);
         mockedCategoryRepository.deleteAll();
         testCategory = new Category();
         //testAccount.setIdAccount(UUID.randomUUID());
         testCategory.setCategoryName("Jewellery");
         testCategory.setCategoryDescription("Shiny");
 
-        //testItem.setLastModified(Date.from(Instant.now()));
-
-
-        //testAccount.setLastModified(Date.from(Instant.now()));
-        //Mockito.when(mockedAccountRepository.save( Mockito.any(Account.class) )).thenReturn(testAccount);
-        //This is what is required
-        //MockitoAnnotations.initMocks(this);
         mockedCategoryRepository.save(testCategory);
 
         this.mvc = MockMvcBuilders.standaloneSetup(categoryController).build();
     }
-
+    //This test checks if a status 200 is returned when a correct Id have been entered.
     @Test
     public void validCategoryId() throws Exception
     {
         mvc.perform(post("/category/id").contentType(MediaType.ALL).param("id", Integer.toString(testCategory.getIdCategory()))).andExpect(status().isOk());
     }
-
+    //This test checks if a status 400 is returned when an incorrect id has been entered.
     @Test
     public void invalidCategoryId() throws Exception
     {

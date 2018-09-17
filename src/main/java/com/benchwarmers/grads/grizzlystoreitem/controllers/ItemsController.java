@@ -35,6 +35,7 @@ public class ItemsController
 
         response.setStatus(HttpStatus.OK);
         response.addAllEntities(items2);
+
         return response.createResponse();
     }
 
