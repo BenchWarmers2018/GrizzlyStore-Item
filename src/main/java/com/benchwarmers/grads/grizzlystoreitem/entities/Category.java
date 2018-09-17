@@ -2,6 +2,7 @@ package com.benchwarmers.grads.grizzlystoreitem.entities;
 
 import javax.persistence.*;
 
+import com.benchwarmers.grads.grizzlystoreitem.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ import java.util.List;
 
 @Entity
 @Table(name = "category")
-public class Category {
+public class Category extends Data {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -42,7 +43,7 @@ public class Category {
         this.categoryDescription = categoryDescription;
     }
 
-    public int getIdCategory() {
+    public Integer getIdCategory() {
         return idCategory;
     }
 

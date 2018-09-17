@@ -1,13 +1,13 @@
 package com.benchwarmers.grads.grizzlystoreitem.entities;
 
+import com.benchwarmers.grads.grizzlystoreitem.Data;
 import org.hibernate.annotations.CreationTimestamp;
 
-import javax.jws.Oneway;
 import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-public class Item {
+public class Item extends Data {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -35,7 +35,7 @@ public class Item {
 
     @CreationTimestamp
     @Column(name = "last_Modified", nullable = false)
-    private Date last_modified;
+    private Date lastModified;
 
     public Item() {
     }
@@ -94,7 +94,7 @@ public class Item {
         this.itemSalePercentage = itemSalePercentage;
     }
 
-    public Date getLast_modified() {
-        return last_modified;
+    public Date getLastModified() {
+        return lastModified;
     }
 }
