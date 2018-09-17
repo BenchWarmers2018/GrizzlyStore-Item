@@ -3,6 +3,7 @@ package com.benchwarmers.grads.grizzlystoreitem.controllers;
 import com.benchwarmers.grads.grizzlystoreitem.Data;
 import com.benchwarmers.grads.grizzlystoreitem.JsonResponse;
 import com.benchwarmers.grads.grizzlystoreitem.entities.Category;
+import com.benchwarmers.grads.grizzlystoreitem.entities.Item;
 import com.benchwarmers.grads.grizzlystoreitem.repositories.CategoryRepository;
 import com.benchwarmers.grads.grizzlystoreitem.repositories.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,22 +27,24 @@ public class CategoryController
     @RequestMapping(path = "/all")
     public ResponseEntity getAllCategories()
     {
+        // This variable is used to remove each item array from categories
+        Category removeItem;
         JsonResponse response = new JsonResponse();
         List<Category> categories;
+        //This List is used to replace the items list in each category
+        List<Item> items = new ArrayList<>();
         List<Data> categoriesData = new ArrayList<>();
         categories = categoryRepository.findAll();
-
 
         for(Category i : categories)
             categoriesData.add(i);
 
-        Array[] hello = new Array[categoriesData.size()];
-
-        for(int i = 0; i < hello.length; ++i)
+        for(int i = 0; i < categories.size(); ++i)
         {
-
+            removeItem = categories.get(i);
+            removeItem.setItems(items);
+            categories.set(i, removeItem);
         }
-
 
         response.setStatus(HttpStatus.OK);
         response.addAllEntities(categoriesData);
@@ -53,6 +56,7 @@ public class CategoryController
     {
         Category category;
         category = categoryRepository.findCategoryByIdCategory(Integer.parseInt(id));
+        //Checks if the category id that has been entered exists before returning a category
         if(!categoryRepository.existsByIdCategory(Integer.parseInt(id)))
         {
             System.out.println(id);
