@@ -24,32 +24,51 @@ public class CategoryController
     @Autowired
     CategoryRepository categoryRepository;
     //This controller returns all categories along with all items within it
+//    @RequestMapping(path = "/allwithoutitems")
+//    public ResponseEntity getAllCategoriesWithoutItems()
+//    {
+//        // This variable is used to remove each item array from categories
+//        Category removeItem;
+//        JsonResponse response = new JsonResponse();
+//        List<Category> categories;
+//        //This List is used to replace the items list in each category
+//        List<Item> items = new ArrayList<>();
+//        List<Data> categoriesData = new ArrayList<>();
+//        categories = categoryRepository.findAll();
+//
+//        for(Category i : categories)
+//            categoriesData.add(i);
+//
+//        for(int i = 0; i < categories.size(); ++i)
+//        {
+//            removeItem = categories.get(i);
+//            removeItem.setItems(items);
+//            categories.set(i, removeItem);
+//        }
+//
+//        response.setStatus(HttpStatus.OK);
+//        response.addAllEntities(categoriesData);
+//        return response.createResponse();
+//    }
+
     @RequestMapping(path = "/all")
     public ResponseEntity getAllCategories()
     {
         // This variable is used to remove each item array from categories
-        Category removeItem;
         JsonResponse response = new JsonResponse();
         List<Category> categories;
-        //This List is used to replace the items list in each category
-        List<Item> items = new ArrayList<>();
         List<Data> categoriesData = new ArrayList<>();
         categories = categoryRepository.findAll();
 
         for(Category i : categories)
             categoriesData.add(i);
 
-        for(int i = 0; i < categories.size(); ++i)
-        {
-            removeItem = categories.get(i);
-            removeItem.setItems(items);
-            categories.set(i, removeItem);
-        }
 
         response.setStatus(HttpStatus.OK);
         response.addAllEntities(categoriesData);
         return response.createResponse();
     }
+
     //This controller takes a category id and returns the category plus all items
     @RequestMapping(path = "/id")
     public ResponseEntity findCategoryById(@RequestParam String id)

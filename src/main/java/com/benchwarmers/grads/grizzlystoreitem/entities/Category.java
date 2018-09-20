@@ -3,6 +3,7 @@ package com.benchwarmers.grads.grizzlystoreitem.entities;
 import javax.persistence.*;
 
 import com.benchwarmers.grads.grizzlystoreitem.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.ArrayList;
@@ -25,8 +26,8 @@ public class Category extends Data {
     private String categoryDescription;
 
 
-    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JoinColumn(name = "idCategory")
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JsonIgnore
     private List<Item> items= new ArrayList<>();
 
     @CreationTimestamp

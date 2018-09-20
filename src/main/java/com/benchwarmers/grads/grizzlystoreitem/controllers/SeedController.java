@@ -41,48 +41,40 @@ public class SeedController {
         Category c6 = new Category(6, "Technology", "If you can't bear to live " +
                 "a life without technology or electronics, fill your void here!");
 
-        Item i1 = new Item("Teddy1", "Cutest teddy bear in the world", "<INSERT URL HERE>",
-                10, 0);
-        Item i2 = new Item( "Teddy2", "Cutest teddy bear in Asia", "<INSERT URL HERE>",
-                10, 0);
-        Item i3 = new Item( "Teddy3", "Cutest teddy bear in Europe", "<INSERT URL HERE>",
-                10, 0);
-        Item i4 = new Item( "Teddy4", "Cutest teddy bear in Australia", "<INSERT URL HERE>",
-                10, 0);
-        Item i5 = new Item( "Teddy5", "Cutest teddy bear in America", "<INSERT URL HERE>",
-                10, 0);
-        Item i6 = new Item( "Teddy6", "Cutest teddy bear in Antartica", "<INSERT URL HERE>",
-                10, 0);
-        Item i7 = new Item( "Teddy7", "Cutest teddy bear in the Artic", "<INSERT URL HERE>",
-                10, 0);
-        Item i8 = new Item( "Teddy8", "Cutest teddy bear in Pluto", "<INSERT URL HERE>",
-                10, 0);
-        Item i9 = new Item( "Teddy9", "Cutest teddy bear in Saturn", "<INSERT URL HERE>",
-                10, 0);
-        Item i10 = new Item( "Teddy10", "Cutest teddy bear in Venus", "<INSERT URL HERE>",
-                10, 0);
-        Item i11 = new Item("Teddy11", "Cutest teddy bear in Mars", "<INSERT URL HERE>",
-                10,0);
-        Item i12 = new Item("Teddy12", "Cutest teddy bear in Mercury", "<INSERT URL HERE>",
-                10, 0);
-
-        c1.addItemToList(i1);
-        c1.addItemToList(i2);
-        c1.addItemToList(i3);
-        c1.addItemToList(i4);
-        c1.addItemToList(i5);
-        c1.addItemToList(i6);
-
-
-
-
-
         categoryRepository.save(c1);
         categoryRepository.save(c2);
         categoryRepository.save(c3);
         categoryRepository.save(c4);
         categoryRepository.save(c5);
         categoryRepository.save(c6);
+
+        Item i1 = new Item("Weddy", "Cutest teddy bear in the world", "<INSERT URL HERE>",
+                12, 0, c1);
+        Item i2 = new Item( "Reddy2", "Cutest teddy bear in Asia", "<INSERT URL HERE>",
+                14, 25, c1);
+        Item i3 = new Item( "Teddy3", "Cutest teddy bear in Europe", "<INSERT URL HERE>",
+                16, 0, c2);
+        Item i4 = new Item( "Ueddy4", "Cutest teddy bear in Australia", "<INSERT URL HERE>",
+                18, 0, c2);
+        Item i5 = new Item( "Oeddy5", "Cutest teddy bear in America", "<INSERT URL HERE>",
+                11, 30, c3);
+        Item i6 = new Item( "Peddy6", "Cutest teddy bear in Antartica", "<INSERT URL HERE>",
+                13, 0, c3);
+        Item i7 = new Item( "Veddy7", "Cutest teddy bear in the Artic", "<INSERT URL HERE>",
+                19, 20, c4);
+        Item i8 = new Item( "Beddy8", "Cutest teddy bear in Pluto", "<INSERT URL HERE>",
+                10, 0, c4);
+        Item i9 = new Item( "Meddy9", "Cutest teddy bear in Saturn", "<INSERT URL HERE>",
+                12, 0, c5);
+        Item i10 = new Item( "Ceddy10", "Cutest teddy bear in Venus", "<INSERT URL HERE>",
+                18, 0, c5);
+        Item i11 = new Item("Meddy11", "Cutest teddy bear in Mars", "<INSERT URL HERE>",
+                17,5, c6);
+        Item i12 = new Item("Qeddy12", "Cutest teddy bear in Mercury", "<INSERT URL HERE>",
+                15, 10, c6);
+
+
+
         itemRepository.save(i1);
         itemRepository.save(i2);
         itemRepository.save(i3);
