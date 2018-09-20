@@ -14,9 +14,9 @@ public class Item extends Data {
     @Column(name = "idItem", nullable = false)
     private Integer idItem;
 
-//    @OneToOne
-//    @JoinColumn(name = "item_category_id", nullable = false)
-//    private Category category;
+    @ManyToOne
+    @JoinColumn(name = "idCategory", nullable = false)
+    private Category category;
 
     @Column(name = "itemName", nullable = false)
     private String itemName;
@@ -40,12 +40,21 @@ public class Item extends Data {
     public Item() {
     }
 
-    public Item(String itemName, String itemDescription, String itemImage, double itemPrice, int itemSalePercentage) {
+    public Item(String itemName, String itemDescription, String itemImage, double itemPrice, int itemSalePercentage, Category category) {
         this.itemName = itemName;
         this.itemDescription = itemDescription;
         this.itemImage = itemImage;
         this.itemPrice = itemPrice;
         this.itemSalePercentage = itemSalePercentage;
+        this.category = category;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
     }
 
     public Integer getIdItem() {
