@@ -1,8 +1,16 @@
 #!/usr/bin/env bash
-
-echo 'Deployment in process'
+echo 'Deployment in progress'
 pwd && cd target
-sudo systemctl stop grizzly-item.service || true
-sudo rm /etc/init.d/grizzly-item || true
-sudo ln -s grizzlystore-item-0.0.1-SNAPSHOT.jar /etc/init.d/grizzly-item
-sudo systemctl start grizzly-item.service
+
+if (( $(ps -ef | grep -v grep | grep grizzlystore-item | wc -l) > 0)) 
+	then
+		echo "Item service is running...attempting to stop service!"
+		sudo systemctl stop grizzlystore-item.service || true
+fi
+
+if [ -f grizzlystore-item ] ; then
+    sudo rm /etc/init.d/grizzlystore-item || true
+fi
+
+cp *.jar /opt/GrizzlyStoreMicroServices/grizzlystore-item.jar
+sudo systemctl start grizzlystore-item.service
