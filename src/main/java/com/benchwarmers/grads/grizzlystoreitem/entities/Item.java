@@ -1,6 +1,7 @@
 package com.benchwarmers.grads.grizzlystoreitem.entities;
 
 import com.benchwarmers.grads.grizzlystoreitem.Data;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -16,6 +17,7 @@ public class Item extends Data {
 
     @ManyToOne
     @JoinColumn(name = "idCategory", nullable = false)
+    @JsonIgnore
     private Category category;
 
     @Column(name = "itemName", nullable = false)
@@ -33,6 +35,9 @@ public class Item extends Data {
     @Column(name = "itemSalePercentage", nullable = false)
     private Integer itemSalePercentage;
 
+    @Column(name = "itemStockLevel", nullable = false)
+    private Integer itemStockLevel;
+
     @CreationTimestamp
     @Column(name = "last_Modified", nullable = false)
     private Date lastModified;
@@ -40,12 +45,13 @@ public class Item extends Data {
     public Item() {
     }
 
-    public Item(String itemName, String itemDescription, String itemImage, double itemPrice, int itemSalePercentage, Category category) {
+    public Item(String itemName, String itemDescription, String itemImage, double itemPrice, int itemSalePercentage, Integer itemStockLevel, Category category) {
         this.itemName = itemName;
         this.itemDescription = itemDescription;
         this.itemImage = itemImage;
         this.itemPrice = itemPrice;
         this.itemSalePercentage = itemSalePercentage;
+        this.itemStockLevel = itemStockLevel;
         this.category = category;
     }
 
@@ -101,6 +107,14 @@ public class Item extends Data {
 
     public void setItemSalePercentage(int itemSalePercentage) {
         this.itemSalePercentage = itemSalePercentage;
+    }
+
+    public Integer getItemStockLevel() {
+        return itemStockLevel;
+    }
+
+    public void setItemStockLevel(Integer itemStockLevel) {
+        this.itemStockLevel = itemStockLevel;
     }
 
     public Date getLastModified() {

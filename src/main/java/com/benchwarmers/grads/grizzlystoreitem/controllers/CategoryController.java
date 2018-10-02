@@ -5,10 +5,10 @@ import com.benchwarmers.grads.grizzlystoreitem.JsonResponse;
 import com.benchwarmers.grads.grizzlystoreitem.entities.Category;
 import com.benchwarmers.grads.grizzlystoreitem.entities.Item;
 import com.benchwarmers.grads.grizzlystoreitem.repositories.CategoryRepository;
-import com.benchwarmers.grads.grizzlystoreitem.repositories.ItemRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -19,37 +19,35 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path = "/category")
+@CrossOrigin
 public class CategoryController
 {
     @Autowired
     CategoryRepository categoryRepository;
+
     //This controller returns all categories along with all items within it
-//    @RequestMapping(path = "/allwithoutitems")
-//    public ResponseEntity getAllCategoriesWithoutItems()
-//    {
-//        // This variable is used to remove each item array from categories
-//        Category removeItem;
-//        JsonResponse response = new JsonResponse();
-//        List<Category> categories;
-//        //This List is used to replace the items list in each category
-//        List<Item> items = new ArrayList<>();
-//        List<Data> categoriesData = new ArrayList<>();
-//        categories = categoryRepository.findAll();
-//
-//        for(Category i : categories)
-//            categoriesData.add(i);
-//
-//        for(int i = 0; i < categories.size(); ++i)
-//        {
-//            removeItem = categories.get(i);
-//            removeItem.setItems(items);
-//            categories.set(i, removeItem);
-//        }
-//
-//        response.setStatus(HttpStatus.OK);
-//        response.addAllEntities(categoriesData);
-//        return response.createResponse();
-//    }
+    @RequestMapping(path = "/allwithoutitems")
+    public ResponseEntity getAllCategoriesWithoutItems()
+    {
+        // This variable is used to remove each item array from categories
+        Category removeItem;
+        JsonResponse response = new JsonResponse();
+
+        //This List is used to replace the items list in each category
+        List<Item> items = new ArrayList<>();
+        List<Data> categoriesData = new ArrayList<>();
+        List<Category> categories = categoryRepository.findAll();
+
+        for(Category i : categories)
+        {
+            i.getItems().removeAll(i.getItems());
+            categoriesData.add(i);
+        }
+
+        response.setStatus(HttpStatus.OK);
+        response.addAllEntities(categoriesData);
+        return response.createResponse();
+    }
 
     @RequestMapping(path = "/all")
     public ResponseEntity getAllCategories()
@@ -60,8 +58,10 @@ public class CategoryController
         List<Data> categoriesData = new ArrayList<>();
         categories = categoryRepository.findAll();
 
-        for(Category i : categories)
+        for(Category i : categories){
             categoriesData.add(i);
+        }
+
 
 
         response.setStatus(HttpStatus.OK);
@@ -110,4 +110,6 @@ public class CategoryController
             return response.createResponse();
         }
     }
+
+
 }
