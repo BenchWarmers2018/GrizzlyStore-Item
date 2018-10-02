@@ -19,7 +19,7 @@ public class Category extends Data {
     @Column(name = "idCategory", nullable = false)
     private Integer idCategory;
 
-    @Column(name = "categoryName", nullable = false)
+    @Column(name = "categoryName", unique = true, nullable = false)
     private String categoryName;
 
     @Column(name = "categoryDescription", nullable = false)
@@ -27,7 +27,6 @@ public class Category extends Data {
 
 
     @OneToMany(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
-    @JsonIgnore
     private List<Item> items= new ArrayList<>();
 
     @CreationTimestamp

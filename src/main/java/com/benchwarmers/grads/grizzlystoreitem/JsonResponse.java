@@ -10,7 +10,7 @@ import java.util.Map;
 
 public class JsonResponse {
     private Map<String, Object> body = new HashMap<String, Object>();
-    private List<Object> entities = new ArrayList<>();
+    private List<Data> entities = new ArrayList<>();
     private List<String> errors = new ArrayList<>();
     private HttpStatus status;
 
@@ -43,16 +43,15 @@ public class JsonResponse {
     }
 
     public void addAllErrors(List<String> listOfErrors) {
-        for(String error : listOfErrors)
-            errors.add(error);
+            errors.addAll(listOfErrors);
     }
 
     public void addAllEntities(List<Data> listOfEntities) {
-        for(Data entity : listOfEntities)
-            entities.add(entity);
+
+            entities.addAll(listOfEntities);
     }
 
-    public List<Object> getEntities() {
+    public List<Data> getEntities() {
         return entities;
     }
 
