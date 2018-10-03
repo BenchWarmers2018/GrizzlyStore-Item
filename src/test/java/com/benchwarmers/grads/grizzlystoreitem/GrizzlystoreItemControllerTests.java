@@ -38,7 +38,7 @@
 //    private ItemsController itemsController;
 //
 //    @Autowired
-//    MockMvc mvc;
+//    MockMvc mockMvc;
 //
 //    @Before
 //    public void setup() {
@@ -60,24 +60,24 @@
 //        //MockitoAnnotations.initMocks(this);
 //        mockedItemRepository.save(testItem);
 //
-//        this.mvc = MockMvcBuilders.standaloneSetup(itemsController).build();
+//        this.mockMvc = MockMvcBuilders.standaloneSetup(itemsController).build();
 //    }
 //
 //    @Test
 //    public void validItemId() throws Exception
 //    {
-//        mvc.perform(post("/items/id").contentType(MediaType.ALL).param("itemId", testItem.getIdItem().toString())).andExpect(status().isOk());
+//        mockMvc.perform(post("/items/id").contentType(MediaType.ALL).param("itemId", testItem.getIdItem().toString())).andExpect(status().isOk());
 //    }
 //
 //    @Test
 //    public void invalidItemId() throws Exception
 //    {
-//        mvc.perform(post("/items/id").contentType(MediaType.ALL).param("itemId", "2000")).andExpect(status().isBadRequest());
+//        mockMvc.perform(post("/items/id").contentType(MediaType.ALL).param("itemId", "2000")).andExpect(status().isBadRequest());
 //    }
 //
 //    @Test
 //    public void getAllItemsCheck() throws Exception
 //    {
-//        mvc.perform(post("/items/all")).andExpect(status().isOk());
+//        mockMvc.perform(post("/items/all")).andExpect(status().isOk());
 //    }
 //}

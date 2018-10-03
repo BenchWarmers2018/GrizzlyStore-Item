@@ -8,10 +8,7 @@ import com.benchwarmers.grads.grizzlystoreitem.repositories.CategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;
@@ -111,5 +108,38 @@ public class CategoryController
         }
     }
 
+    @CrossOrigin
+    @RequestMapping(path = "/add", method = RequestMethod.POST)
+    public ResponseEntity addCategory(@RequestBody Category category) {
+        JsonResponse response = new JsonResponse();
+        if(!isNullOrEmpty(category.getCategoryName()))
+        {
+            if (categoryRepository.existsByCategoryName(category.getCategoryName()))
+            {
+                createErrorMessage(response,"A category already exists with this name!");
+            }
+            else
+            {
+                categoryRepository.save(category);
+                response.setStatus(HttpStatus.OK);
+                response.addEntity(category);
+            }
+        }
+        else
+        {
+            createErrorMessage(response,"No category name specified. Please enter a name!");
+        }
 
+        return response.createResponse();
+    }
+
+    // Checks whether input is null and if it is empty
+    private Boolean isNullOrEmpty(String input) {
+        return (input.isEmpty() || input.equals(null));
+    }
+
+    private void createErrorMessage(JsonResponse response, String string) {
+        response.setStatus(HttpStatus.NOT_ACCEPTABLE);
+        response.addErrorMessage(string);
+    }
 }
