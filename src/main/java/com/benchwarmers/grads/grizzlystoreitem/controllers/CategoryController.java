@@ -112,11 +112,14 @@ public class CategoryController
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public ResponseEntity addCategory(@RequestBody Category category) {
         JsonResponse response = new JsonResponse();
-        if(!isNullOrEmpty(category.getCategoryName()))
+        String enteredCategoryName = category.getCategoryName();
+        String enteredCategoryDescription = category.getCategoryDescription();
+
+        if(!isNullOrEmpty(enteredCategoryName))
         {
-            if (categoryRepository.existsByCategoryName(category.getCategoryName()))
+            if (categoryRepository.existsByCategoryName(enteredCategoryName))
             {
-                createErrorMessage(response,"A category already exists with this name!");
+                createErrorMessage(response,"A category already exists with this name: " + enteredCategoryName + "!");
             }
             else
             {

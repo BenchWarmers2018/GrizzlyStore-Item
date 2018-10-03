@@ -70,6 +70,7 @@ public class GrizzlystoreCategoryControllerTests
     @Test
     public void validCategoryName() throws Exception
     {
+
         mockMvc.perform(post("/category/name").contentType(MediaType.ALL).param("name", testCategory.getCategoryName())).andExpect(status().isOk());
     }
 
@@ -88,32 +89,18 @@ public class GrizzlystoreCategoryControllerTests
     @Test
     public void addCategorySuccess() throws Exception {
         ObjectMapper mapper = new ObjectMapper();
-        testJson = "{" +
-                "\"categoryName\":\"Jewellery\", " +
-                "\"categoryDescription\":\"Shiny\"" +
-                "}";
-//        testJson = "{" +
-//                "\"categoryName\":\"" + testCategory.getCategoryName() + "\", " +
-//                "\"categoryDescription\":\"" + testCategory.getCategoryDescription() + "\"" +
-//                "}";
+        Category validCategory = new Category();
 
-        MvcResult result = mockMvc.perform(
+        testJson = "{" +
+                "\"categoryName\":\"New Category\", " +
+                "\"categoryDescription\":\"Sample Description\"" +
+                "}";
+
+        mockMvc.perform(
                 MockMvcRequestBuilders.post("/category/add")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(testJson))
-                .andExpect(status().isOk())
-                .andReturn();
-
-        String content = result.getResponse().getContentAsString();
-
-        // Create a JSONArray using the array within the JsonResponse called "entities"
-        JSONArray jsonEntities = new JSONObject(content).getJSONArray("entities");
-
-        // Create a JSON Object containing the testCategory
-        JSONObject category = new JSONObject(mapper.writeValueAsString(testJson));
-
-        // Checks that the first index within the entities contains the category that we're adding
-        JSONAssert.assertEquals(category.toString(), jsonEntities.get(0).toString(), true);
+                .andExpect(status().isOk());
     }
 
     @Test
@@ -127,7 +114,7 @@ public class GrizzlystoreCategoryControllerTests
                 MockMvcRequestBuilders.post("/category/add")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(testJson))
-                .andExpect(status().isOk())
+                .andExpect(status().isNotAcceptable())
                 .andReturn();
 
         String content = result.getResponse().getContentAsString();
@@ -137,6 +124,34 @@ public class GrizzlystoreCategoryControllerTests
 
         // Expected error message
         String errorMessage = "No category name specified. Please enter a name!";
+
+        // Error message within the JsonResponse
+        String jsonErrorMessage = jsonErrors.get(0).toString();
+
+        Assert.assertEquals(errorMessage, jsonErrorMessage);
+    }
+
+    @Test
+    public void addCategoryThatAlreadyExists() throws Exception {
+        testJson = "{" +
+                "\"categoryName\":\"" + testCategory.getCategoryName() + "\", " +
+                "\"categoryDescription\":\"\"" +
+                "}";
+
+        MvcResult result = mockMvc.perform(
+                MockMvcRequestBuilders.post("/category/add")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(testJson))
+                .andExpect(status().isNotAcceptable())
+                .andReturn();
+
+        String content = result.getResponse().getContentAsString();
+
+        // Get the objects within the "errors" section of the Json Response
+        JSONArray jsonErrors = new JSONObject(content).getJSONArray("errors");
+
+        // Expected error message
+        String errorMessage = "A category already exists with this name: " + testCategory.getCategoryName() + "!";
 
         // Error message within the JsonResponse
         String jsonErrorMessage = jsonErrors.get(0).toString();
