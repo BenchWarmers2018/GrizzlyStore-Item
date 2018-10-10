@@ -37,7 +37,7 @@ public class CategoryController
 
         for(Category i : categories)
         {
-            i.getItems().removeAll(i.getItems());
+            i.setItems(items);
             categoriesData.add(i);
         }
 
