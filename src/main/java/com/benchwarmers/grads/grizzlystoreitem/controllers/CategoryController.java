@@ -111,5 +111,30 @@ public class CategoryController
         }
     }
 
+    @RequestMapping(path = "/itemid")
+    public ResponseEntity findCategoryByItemId(@RequestParam String itemid)
+    {
+        JsonResponse response = new JsonResponse();
+        List<Category> categoryList = categoryRepository.findAll();
+        for (Category cat: categoryList
+             ) {
+            List<Item> itemList = cat.getItems();
+            for (Item i: itemList
+                 ) {
+                if(i.getIdItem()==Integer.parseInt(itemid))
+                {
+                    response.setStatus(HttpStatus.OK);
+                    cat.getItems().removeAll(cat.getItems());
+                    response.addEntity(cat);
+                    break;
+                }
+
+            }
+
+        }
+        return response.createResponse();
+
+    }
+
 
 }

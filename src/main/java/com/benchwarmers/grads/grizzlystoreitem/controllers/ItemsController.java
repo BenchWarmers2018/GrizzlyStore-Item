@@ -32,12 +32,11 @@ public class ItemsController
     public ResponseEntity getAllItems()
     {
         JsonResponse response = new JsonResponse(); 
-        List<Item> items;
-        List<Data> items2 = new ArrayList<>();
-        items = itemRepository.findAll();
 
-        for(Item i : items)
-            items2.add(i);
+        List<Data> items2 = new ArrayList<>();
+        List<Item> items = itemRepository.findAll();
+
+        items2.addAll(items);
 
         response.setStatus(HttpStatus.OK);
         response.addAllEntities(items2);
@@ -85,9 +84,11 @@ public class ItemsController
     {
 
 
+
         List<List<Item>> combined = new ArrayList<>();
         List<Item> fullList = itemRepository.findAll();
         combined.add(fullList);
+
 
         //Empty arrays
         List<Item> catList = new ArrayList<>();
@@ -130,127 +131,135 @@ public class ItemsController
 ////            finalList.add(item);
 ////        }
         //Calculate min and max for the returned items
-        Item minItem = finalList
-                .stream()
-                .min(Comparator.comparing(Item::getItemPrice))
-                .orElseThrow(NoSuchElementException::new);
-        Item maxItem = finalList
-                .stream()
-                .max(Comparator.comparing(Item::getItemPrice))
-                .orElseThrow(NoSuchElementException::new);
 
-
-        //Sorting final list
-        if(sortBy.equalsIgnoreCase("lowtohigh"))
+        if(finalList.size()>0)
         {
-            System.out.println("It was " + sortBy);
-            finalList.sort(Comparator.comparing(Item::getItemPrice));
+           Item minItem = finalList
+                    .stream()
+                    .min(Comparator.comparing(Item::getItemPrice))
+                    .orElseThrow(NoSuchElementException::new);
+           Item maxItem = finalList
+                    .stream()
+                    .max(Comparator.comparing(Item::getItemPrice))
+                    .orElseThrow(NoSuchElementException::new);
+
+
+            //Sorting final list
+            if(sortBy.equalsIgnoreCase("lowtohigh"))
+            {
+                System.out.println("It was " + sortBy);
+                finalList.sort(Comparator.comparing(Item::getItemPrice));
+            }
+            else if(sortBy.equalsIgnoreCase("hightolow"))
+            {
+                finalList.sort(Comparator.comparing(Item::getItemPrice).reversed());
+            }
+            else{
+                System.out.println("It was fianlly " + sortBy);
+                finalList.sort(Comparator.comparing(Item::getItemName));
+            }
+
+
+
+            PagedListHolder tempPage = new PagedListHolder(finalList);
+            tempPage.setPageSize(size); // number of items per page
+            tempPage.setPage(page);
+
+            Page p = new Page() {
+
+                @Override
+                public int getTotalPages() {
+                    return tempPage.getPageCount();
+                }
+
+                @Override
+                public long getTotalElements() {
+                    return tempPage.getNrOfElements();
+                }
+
+                @Override
+                public Page map(Function function) {
+                    return null;
+                }
+
+                @Override
+                public int getNumber() {
+                    return tempPage.getPage();
+                }
+
+                @Override
+                public int getSize() {
+                    //Sending out minimum price
+                    return (int)minItem.getItemPrice();
+                }
+
+                @Override
+                public int getNumberOfElements() {
+                    //Sending out maximum price
+                    return (int)maxItem.getItemPrice();
+                }
+
+                @Override
+                public List getContent() {
+                    return tempPage.getPageList();
+                }
+
+                @Override
+                public boolean hasContent() {
+                    return tempPage.getPageList().size() > 0;
+                }
+
+                @Override
+                public Sort getSort() {
+                    return null;
+                }
+
+                @Override
+                public boolean isFirst() {
+                    return tempPage.isFirstPage();
+                }
+
+                @Override
+                public boolean isLast() {
+                    return tempPage.isLastPage();
+                }
+
+                @Override
+                public boolean hasNext() {
+                    return false;
+                }
+
+                @Override
+                public boolean hasPrevious() {
+                    return false;
+                }
+
+                @Override
+                public Pageable nextPageable() {
+                    return null;
+                }
+
+                @Override
+                public Pageable previousPageable() {
+                    return null;
+                }
+
+                @Override
+                public Iterator iterator() {
+                    return null;
+                }
+            };
+            return p;
         }
-        else if(sortBy.equalsIgnoreCase("hightolow"))
-        {
-            finalList.sort(Comparator.comparing(Item::getItemPrice).reversed());
-        }
-        else{
-            System.out.println("It was fianlly " + sortBy);
-            finalList.sort(Comparator.comparing(Item::getItemName));
-        }
 
+        Page emptyPage = new PageImpl(finalList);
 
-
-        PagedListHolder tempPage = new PagedListHolder(finalList);
-        tempPage.setPageSize(size); // number of items per page
-        tempPage.setPage(page);
-
-        Page p = new Page() {
-
-            @Override
-            public int getTotalPages() {
-                return tempPage.getPageCount();
-            }
-
-            @Override
-            public long getTotalElements() {
-                return tempPage.getNrOfElements();
-            }
-
-            @Override
-            public Page map(Function function) {
-                return null;
-            }
-
-            @Override
-            public int getNumber() {
-                return tempPage.getPage();
-            }
-
-            @Override
-            public int getSize() {
-                //Sending out minimum price
-                return (int)minItem.getItemPrice();
-            }
-
-            @Override
-            public int getNumberOfElements() {
-                //Sending out maximum price
-                return (int)maxItem.getItemPrice();
-            }
-
-            @Override
-            public List getContent() {
-                return tempPage.getPageList();
-            }
-
-            @Override
-            public boolean hasContent() {
-                return tempPage.getPageList().size() > 0;
-            }
-
-            @Override
-            public Sort getSort() {
-                return null;
-            }
-
-            @Override
-            public boolean isFirst() {
-                return tempPage.isFirstPage();
-            }
-
-            @Override
-            public boolean isLast() {
-                return tempPage.isLastPage();
-            }
-
-            @Override
-            public boolean hasNext() {
-                return false;
-            }
-
-            @Override
-            public boolean hasPrevious() {
-                return false;
-            }
-
-            @Override
-            public Pageable nextPageable() {
-                return null;
-            }
-
-            @Override
-            public Pageable previousPageable() {
-                return null;
-            }
-
-            @Override
-            public Iterator iterator() {
-                return null;
-            }
-        };
         // number of pages
           // a List which represents the current page
 
         //Page<Item> tempPage = new PageImpl<Item>(finalList, PageRequest.of(page,size), finalList.size());
         System.out.println("finalList List size is" + finalList.size());
-        return p;
+        return emptyPage;
     }
 
 
