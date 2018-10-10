@@ -18,4 +18,7 @@ public interface CategoryRepository extends JpaRepository<Category, Integer> {
     Page findCategoryByCategoryName(String name, Pageable pageable);
     boolean existsByCategoryName(String name);
 
+    Category findCategoriesByItemsContaining(Integer itemId);
+    boolean existsCategoryByItemsContaining(Integer itemId);
+
 }

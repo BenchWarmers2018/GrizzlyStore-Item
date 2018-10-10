@@ -37,7 +37,7 @@ public class CategoryController
 
         for(Category i : categories)
         {
-            i.getItems().removeAll(i.getItems());
+            i.setItems(items);
             categoriesData.add(i);
         }
 
@@ -108,6 +108,33 @@ public class CategoryController
         }
     }
 
+
+    @RequestMapping(path = "/itemid")
+    public ResponseEntity findCategoryByItemId(@RequestParam String itemid)
+    {
+        JsonResponse response = new JsonResponse();
+        List<Category> categoryList = categoryRepository.findAll();
+        for (Category cat: categoryList
+             ) {
+            List<Item> itemList = cat.getItems();
+            for (Item i: itemList
+                 ) {
+                if(i.getIdItem()==Integer.parseInt(itemid))
+                {
+                    response.setStatus(HttpStatus.OK);
+                    cat.getItems().removeAll(cat.getItems());
+                    response.addEntity(cat);
+                    break;
+                }
+
+            }
+
+        }
+        return response.createResponse();
+
+    }
+
+
     @CrossOrigin
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public ResponseEntity addCategory(@RequestBody Category category) {
@@ -132,6 +159,7 @@ public class CategoryController
         {
             createErrorMessage(response,"No category name specified. Please enter a name!");
         }
+
 
         return response.createResponse();
     }

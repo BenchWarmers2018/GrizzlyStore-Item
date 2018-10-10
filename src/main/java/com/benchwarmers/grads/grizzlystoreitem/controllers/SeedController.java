@@ -51,6 +51,7 @@ public class SeedController {
         categoryRepository.save(c6);
 
 
+
         Item iA01 = new Item("Bear Silhouette Wood Plank Cutout ", "In sea vide nostrud, tantas consul argumentum an nec, no mel persecuti scripserit. Usu viderer docendi accommodare in, dolores repudiandae id vel. Eros principes et duo. Cu tollit putent theophrastus eam.",
                 "http://bw.ausgrads.academy/images/grizzlystore/iA01.jpg", 45.95, 0, 7, c1);
         Item iA02 = new Item( "Cute Panda Heart Painting Acrylic", "Ad sed rebum soluta, homero percipitur ius eu, cu nam integre feugiat. An nec unum voluptua complectitur, eleifend abhorreant ad est, ne tractatos honestatis vel. Qui te soluta laoreet, graeci aperiri singulis sea ei.",
@@ -637,6 +638,7 @@ public class SeedController {
                 "http://bw.ausgrads.academy/images/grizzlystore/iY34.jpg", 30.00, 0, 35, c6);
         Item iY35 = new Item("My First Teddy Bear", "Ei eos clita definiebas, libris regione conceptam vel cu. Eos erant errem voluptatibus cu. Nec at probo possim delenit, eu velit iudico dissentiunt mel, sit dicit denique cu.",
                 "http://bw.ausgrads.academy/images/grizzlystore/iY35.jpg", 25.00,5, 23, c6);
+
 
 
         itemRepository.save(iA01);

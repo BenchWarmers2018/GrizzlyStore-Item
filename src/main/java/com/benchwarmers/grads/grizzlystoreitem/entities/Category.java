@@ -25,7 +25,6 @@ public class Category extends Data {
     @Column(name = "categoryDescription", nullable = false)
     private String categoryDescription;
 
-
     @OneToMany(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<Item> items= new ArrayList<>();
 
@@ -69,11 +68,17 @@ public class Category extends Data {
     }
 
     public void setItems(List<Item> items) {
+        items.forEach(item -> item.setCategory(this));
         this.items = items;
     }
+//    public void setItems(List<Item> items) {
+//        items.forEach(item -> item.setCategory(this));
+//        this.items = items;
+//    }
 
     public void addItemToList(Item item)
     {
+        item.setCategory(this);
         items.add(item);
     }
     public Date getLast_modified() {
