@@ -2,19 +2,14 @@ package com.benchwarmers.grads.grizzlystoreitem.controllers;
 
 import com.benchwarmers.grads.grizzlystoreitem.Data;
 import com.benchwarmers.grads.grizzlystoreitem.JsonResponse;
-import com.benchwarmers.grads.grizzlystoreitem.entities.Category;
 import com.benchwarmers.grads.grizzlystoreitem.entities.Item;
 import com.benchwarmers.grads.grizzlystoreitem.repositories.ItemRepository;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import sun.misc.Resource;
-
-import javax.xml.ws.Response;
 import java.util.*;
 import java.util.function.Function;
 
