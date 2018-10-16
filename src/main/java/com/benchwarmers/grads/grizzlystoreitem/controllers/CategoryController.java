@@ -9,8 +9,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,7 +106,6 @@ public class CategoryController
         }
     }
 
-
     @RequestMapping(path = "/itemid")
     public ResponseEntity findCategoryByItemId(@RequestParam String itemid)
     {
@@ -134,19 +131,17 @@ public class CategoryController
 
     }
 
-
-    @CrossOrigin
+    // Allows categories to be added to the system
     @RequestMapping(path = "/add", method = RequestMethod.POST)
     public ResponseEntity addCategory(@RequestBody Category category) {
         JsonResponse response = new JsonResponse();
         String enteredCategoryName = category.getCategoryName();
-        String enteredCategoryDescription = category.getCategoryDescription();
 
         if(!isNullOrEmpty(enteredCategoryName))
         {
             if (categoryRepository.existsByCategoryName(enteredCategoryName))
             {
-                createErrorMessage(response,"A category already exists with this name: " + enteredCategoryName + "!");
+                createErrorMessage(response,"A category already exists with this name!");
             }
             else
             {
@@ -164,13 +159,55 @@ public class CategoryController
         return response.createResponse();
     }
 
+
+    // Allows edits to be made to existing categories
+    @RequestMapping(path = "/edit", method = RequestMethod.POST)
+    public ResponseEntity updateCategory(@RequestBody Category category) {
+        JsonResponse response = new JsonResponse();
+        String enteredCategoryName = category.getCategoryName();
+        String enteredCategoryDescription = category.getCategoryDescription();
+
+        if(!isNullOrEmpty(enteredCategoryName))
+        {
+            Category existingCategory = categoryRepository.findCategoryByIdCategory(category.getIdCategory());
+
+            if (equals(category, existingCategory))
+            {
+                createErrorMessage(response, "No changes detected.");
+            }
+            else
+            {
+                // Update the existing category with the new name and description
+                existingCategory.setCategoryName(enteredCategoryName);
+                existingCategory.setCategoryDescription(enteredCategoryDescription);
+                categoryRepository.save(existingCategory);
+                response.setStatus(HttpStatus.OK);
+                response.addEntity(existingCategory);
+            }
+        }
+        else
+        {
+            createErrorMessage(response,"No category name specified. Please enter a name!");
+        }
+
+        return response.createResponse();
+    }
+
     // Checks whether input is null and if it is empty
     private Boolean isNullOrEmpty(String input) {
         return (input.isEmpty() || input.equals(null));
     }
 
+    // Adds an error message to a JsonResponse using the string that is specified
     private void createErrorMessage(JsonResponse response, String string) {
         response.setStatus(HttpStatus.NOT_ACCEPTABLE);
         response.addErrorMessage(string);
+    }
+
+
+    // Checks whether the new and existing category are equal (in terms of name and description)
+    private Boolean equals(Category newCategory, Category existingCategory) {
+        return newCategory.getCategoryDescription().equals(existingCategory.getCategoryDescription())
+                && newCategory.getCategoryName().equals(existingCategory.getCategoryName());
     }
 }

@@ -4,18 +4,12 @@ import com.benchwarmers.grads.grizzlystoreitem.Data;
 import com.benchwarmers.grads.grizzlystoreitem.JsonResponse;
 import com.benchwarmers.grads.grizzlystoreitem.entities.Item;
 import com.benchwarmers.grads.grizzlystoreitem.repositories.ItemRepository;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-import sun.misc.Resource;
-
+import org.springframework.web.bind.annotation.*;
 import java.util.*;
 import java.util.function.Function;
 
@@ -281,7 +275,68 @@ public class ItemsController
     }
 
 
+    // Allows edits to be made to existing items
+    @RequestMapping(path = "/edit", method = RequestMethod.POST)
+    public ResponseEntity updateCategory(@RequestBody Item item) {
+        JsonResponse response = new JsonResponse();
+
+        String enteredItemName = item.getItemName();
+        String enteredItemDescription = item.getItemDescription();
+        String enteredItemImage = item.getItemImage();
+        Double enteredItemPrice = item.getItemPrice();
+        Integer enteredItemSalePercentage= item.getItemSalePercentage();
+        Integer enteredItemStockLevel = item.getItemStockLevel();
+
+        if(!isNullOrEmpty(enteredItemName) && !isNullOrEmpty(enteredItemDescription) && !isNullOrEmpty(enteredItemImage)
+           && !enteredItemPrice.isNaN() && !isNullOrEmpty(enteredItemSalePercentage.toString())
+           && !isNullOrEmpty(enteredItemStockLevel.toString()))
+        {
+            Item existingItem = itemRepository.findItemByIdItem(item.getIdItem());
+
+            if (equals(item, existingItem))
+            {
+                createErrorMessage(response, "No changes detected.");
+            }
+            else
+            {
+                // Update the existing item with the new details
+                existingItem.setItemName(enteredItemName);
+                existingItem.setItemDescription(enteredItemDescription);
+                existingItem.setItemImage(enteredItemImage);
+                existingItem.setItemPrice(enteredItemPrice);
+                existingItem.setItemSalePercentage(enteredItemSalePercentage);
+                existingItem.setItemStockLevel(enteredItemStockLevel);
+
+                itemRepository.save(existingItem);
+                response.setStatus(HttpStatus.OK);
+                response.addEntity(existingItem);
+            }
+        }
+        else
+        {
+            createErrorMessage(response,"Please resolve all input errors then try again!");
+        }
+
+        return response.createResponse();
+    }
+
+    // Checks whether input is null and if it is empty
+    private Boolean isNullOrEmpty(String input) { return (input.isEmpty() || input.equals(null)); }
+
+    // Adds an error message to a JsonResponse using the string that is specified
+    private void createErrorMessage(JsonResponse response, String string) {
+        response.setStatus(HttpStatus.NOT_ACCEPTABLE);
+        response.addErrorMessage(string);
+    }
 
 
-
+    // Checks whether the new and existing category are equal (in terms of name and description)
+    private Boolean equals(Item newItem, Item existingItem) {
+        return newItem.getItemDescription().equals(existingItem.getItemDescription())
+                && newItem.getItemName().equals(existingItem.getItemName())
+                && newItem.getItemImage().equals(existingItem.getItemImage())
+                && newItem.getItemPrice() == existingItem.getItemPrice()
+                && newItem.getItemSalePercentage() == existingItem.getItemSalePercentage()
+                && newItem.getItemStockLevel() == existingItem.getItemStockLevel();
+    }
 }
