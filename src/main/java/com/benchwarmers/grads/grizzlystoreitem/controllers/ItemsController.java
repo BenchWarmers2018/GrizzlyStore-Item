@@ -2,8 +2,11 @@ package com.benchwarmers.grads.grizzlystoreitem.controllers;
 
 import com.benchwarmers.grads.grizzlystoreitem.Data;
 import com.benchwarmers.grads.grizzlystoreitem.JsonResponse;
+import com.benchwarmers.grads.grizzlystoreitem.entities.Category;
 import com.benchwarmers.grads.grizzlystoreitem.entities.Item;
+import com.benchwarmers.grads.grizzlystoreitem.repositories.CategoryRepository;
 import com.benchwarmers.grads.grizzlystoreitem.repositories.ItemRepository;
+import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.json.JSONObject;
@@ -303,45 +306,12 @@ public class ItemsController
         return common;
     }
 
-    @RequestMapping(path = "/upload", method = RequestMethod.POST)
-    public ResponseEntity uploadImage(@RequestParam("idItem") String idItem, @RequestParam("file") MultipartFile file) {
-        JsonResponse response = new JsonResponse();
-        if (!file.isEmpty())
-        {
-            Item existingItem = itemRepository.findItemByIdItem(Integer.parseInt(idItem));
-
-            try
-            {
-                String uploadDir = "/opt/images/grizzlystore/";
-                String filename = file.getOriginalFilename();
-                String filePath = uploadDir + filename;
-                if (!new File(uploadDir).exists())
-                {
-                    new File(uploadDir).mkdirs();
-                }
-                File dest = new File(filePath);
-                file.transferTo(dest);
-                existingItem.setItemImage("http://bw.ausgrads.academy/images/" + filename);
-                itemRepository.save(existingItem);
-                response.addEntity(existingItem);
-                response.setStatus(HttpStatus.OK);
-            }
-            catch (Exception e)
-            {
-                System.out.println(e.toString());
-                createErrorMessage(response, "Unable to upload the image. " + e.toString());
-                return response.createResponse();
-            }
-        }
-
-        return response.createResponse();
-    }
-
-
     // Allows edits to be made to existing items
     @RequestMapping(path = "/edit", method = RequestMethod.POST)
-    public ResponseEntity updateItem(@RequestBody Item item) {
+    public ResponseEntity updateItem(@RequestParam("item") String itemJson, @RequestParam("file") Optional<MultipartFile> uploadedFile) {
         JsonResponse response = new JsonResponse();
+        Gson g = new Gson();
+        Item item = g.fromJson(itemJson, Item.class);
 
         String enteredItemName = item.getItemName();
         String enteredItemDescription = item.getItemDescription();
@@ -349,13 +319,26 @@ public class ItemsController
         Integer enteredItemSalePercentage= item.getItemSalePercentage();
         Integer enteredItemStockLevel = item.getItemStockLevel();
 
-        if(!isNullOrEmpty(enteredItemName) && !isNullOrEmpty(enteredItemDescription)
+        Boolean isDifferentImage = false;
+        MultipartFile file = null;
+
+        // Check if a file was uploaded and check if the image is different (based on filename)
+        if (uploadedFile.isPresent())
+        {
+            file = uploadedFile.get();
+            isDifferentImage = !item.getItemImage().equals("/Users/723303/Desktop/images/grizzlystore/" + file.getOriginalFilename());
+            System.out.println("This is a different image: " + isDifferentImage);
+        }
+
+        // Check whether there's a different image uploaded or whether all input fills have entries
+        if(isDifferentImage || (!isNullOrEmpty(enteredItemName) && !isNullOrEmpty(enteredItemDescription)
             && !enteredItemPrice.isNaN() && !isNullOrEmpty(enteredItemSalePercentage.toString())
-            && !isNullOrEmpty(enteredItemStockLevel.toString()))
+            && !isNullOrEmpty(enteredItemStockLevel.toString())) )
         {
             Item existingItem = itemRepository.findItemByIdItem(item.getIdItem());
 
-            if (equals(item, existingItem))
+
+            if (equals(item, existingItem) && !isDifferentImage)
             {
                 createErrorMessage(response, "No changes detected.");
             }
@@ -367,6 +350,30 @@ public class ItemsController
                 existingItem.setItemPrice(enteredItemPrice);
                 existingItem.setItemSalePercentage(enteredItemSalePercentage);
                 existingItem.setItemStockLevel(enteredItemStockLevel);
+
+                // Upload the new image if it's different
+                if (isDifferentImage)
+                {
+                    try
+                    {
+                        String uploadDir = "/opt/images/grizzlystore/";
+                        String filename = file.getOriginalFilename();
+                        String filePath = uploadDir + filename;
+                        if (!new File(uploadDir).exists())
+                        {
+                            new File(uploadDir).mkdirs();
+                        }
+                        File dest = new File(filePath);
+                        file.transferTo(dest);
+                        existingItem.setItemImage("http://bw.ausgrads.academy/images/" + filename);
+                    }
+                    catch (Exception e)
+                    {
+                        System.out.println(e.toString());
+                        createErrorMessage(response, "Unable to upload the image. " + e.toString());
+                        return response.createResponse();
+                    }
+                }
 
                 itemRepository.save(existingItem);
                 response.setStatus(HttpStatus.OK);
