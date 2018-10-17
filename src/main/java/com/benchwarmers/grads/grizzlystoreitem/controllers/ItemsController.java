@@ -10,6 +10,9 @@ import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
 import java.util.*;
 import java.util.function.Function;
 
@@ -270,10 +273,44 @@ public class ItemsController
         return common;
     }
 
+    @RequestMapping(path = "/upload", method = RequestMethod.POST)
+    public ResponseEntity uploadImage(@RequestParam("idItem") String idItem, @RequestParam("file") MultipartFile file) {
+        JsonResponse response = new JsonResponse();
+        if (!file.isEmpty())
+        {
+            Item existingItem = itemRepository.findItemByIdItem(Integer.parseInt(idItem));
+
+            try
+            {
+                String uploadDir = "/opt/images/grizzlystore/";
+                String filename = file.getOriginalFilename();
+                String filePath = uploadDir + filename;
+                if (!new File(uploadDir).exists())
+                {
+                    new File(uploadDir).mkdirs();
+                }
+                File dest = new File(filePath);
+                file.transferTo(dest);
+                existingItem.setItemImage("http://bw.ausgrads.academy/images/" + filename);
+                itemRepository.save(existingItem);
+                response.addEntity(existingItem);
+                response.setStatus(HttpStatus.OK);
+            }
+            catch (Exception e)
+            {
+                System.out.println(e.toString());
+                createErrorMessage(response, "Unable to upload the image. " + e.toString());
+                return response.createResponse();
+            }
+        }
+
+        return response.createResponse();
+    }
+
 
     // Allows edits to be made to existing items
     @RequestMapping(path = "/edit", method = RequestMethod.POST)
-    public ResponseEntity updateCategory(@RequestBody Item item) {
+    public ResponseEntity updateItem(@RequestBody Item item) {
         JsonResponse response = new JsonResponse();
 
         String enteredItemName = item.getItemName();
@@ -326,7 +363,7 @@ public class ItemsController
     }
 
 
-    // Checks whether the new and existing category are equal (in terms of name and description)
+    // Checks whether the new and existing item are equal
     private Boolean equals(Item newItem, Item existingItem) {
         return newItem.getItemDescription().equals(existingItem.getItemDescription())
                 && newItem.getItemName().equals(existingItem.getItemName())
