@@ -434,3 +434,4 @@ public class ItemsController {
                 && newItem.getItemSalePercentage() == existingItem.getItemSalePercentage()
                 && newItem.getItemStockLevel() == existingItem.getItemStockLevel();
     }
+}
