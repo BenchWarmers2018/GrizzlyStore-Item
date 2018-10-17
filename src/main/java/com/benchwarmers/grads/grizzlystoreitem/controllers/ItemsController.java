@@ -313,7 +313,7 @@ public class ItemsController {
                 }
                 File dest = new File(filePath);
                 file.transferTo(dest);
-                item.setItemImage("http://bw.ausgrads.academy/images/" + filename);
+                item.setItemImage("http://bw.ausgrads.academy/images/grizzlystore/" + filename);
             } catch (Exception e) {
                 System.out.println(e.toString());
                 createErrorMessage(response, "Unable add item. " + e.toString());
@@ -392,7 +392,7 @@ public class ItemsController {
                         }
                         File dest = new File(filePath);
                         file.transferTo(dest);
-                        existingItem.setItemImage("http://bw.ausgrads.academy/images/" + filename);
+                        existingItem.setItemImage("http://bw.ausgrads.academy/images/grizzlystore/" + filename);
                     }
                     catch (Exception e)
                     {
