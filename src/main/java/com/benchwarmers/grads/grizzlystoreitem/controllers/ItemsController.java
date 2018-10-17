@@ -7,10 +7,13 @@ import com.benchwarmers.grads.grizzlystoreitem.entities.Item;
 import com.benchwarmers.grads.grizzlystoreitem.repositories.CategoryRepository;
 import com.benchwarmers.grads.grizzlystoreitem.repositories.ItemRepository;
 import com.google.gson.Gson;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.json.JSONObject;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -63,6 +66,29 @@ public class ItemsController {
             response.addEntity(item);
             return response.createResponse();
         }
+    }
+
+    @RequestMapping(value = "/multiple/ids", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE)
+    public ResponseEntity getMultipleItemswithIds(@RequestBody String json)
+    {
+        JsonResponse response = new JsonResponse();
+        JSONObject jsonObject = new JSONObject(json);
+        JSONArray idArray = jsonObject.getJSONArray("itemIdList");
+        List<Integer> idList = new ArrayList<>();
+        if (idArray != null) {
+            for (int i=0;i<idArray.length();i++){
+                idList.add(idArray.getInt(i));
+            }
+        }
+        for(Integer i : idList)
+        {
+            if(itemRepository.existsByIdItem(i))
+            {
+                response.addEntity(itemRepository.findItemByIdItem(i));
+            }
+        }
+        response.setStatus(HttpStatus.OK);
+        return response.createResponse();
     }
 
 
@@ -265,7 +291,7 @@ public class ItemsController {
         }
         return common;
     }
-
+  
     @RequestMapping(path = "/addItem", method = RequestMethod.POST, consumes = "multipart/form-data")
     public ResponseEntity addNewItem(@RequestParam("file") MultipartFile file,
                                      @RequestParam("item") String itemString,
@@ -306,30 +332,69 @@ public class ItemsController {
         return response.createResponse();
     }
 
+
+    @RequestMapping(path = "/upload", method = RequestMethod.POST)
+    public ResponseEntity uploadImage(@RequestParam("idItem") String idItem, @RequestParam("file") MultipartFile file) {
+        JsonResponse response = new JsonResponse();
+        if (!file.isEmpty())
+        {
+            Item existingItem = itemRepository.findItemByIdItem(Integer.parseInt(idItem));
+
+            try
+            {
+                String uploadDir = "/opt/images/grizzlystore/";
+                String filename = file.getOriginalFilename();
+                String filePath = uploadDir + filename;
+                if (!new File(uploadDir).exists())
+                {
+                    System.out.println("Directory does not exist");
+                    new File(uploadDir).mkdirs();
+                }
+                File dest = new File(filePath);
+                file.transferTo(dest);
+                existingItem.setItemImage("http://bw.ausgrads.academy/images/" + filename);
+                itemRepository.save(existingItem);
+                response.addEntity(existingItem);
+                response.setStatus(HttpStatus.OK);
+            }
+            catch (Exception e)
+            {
+                System.out.println(e.toString());
+                createErrorMessage(response, "Unable to upload the image. " + e.toString());
+                return response.createResponse();
+            }
+        }
+
+        return response.createResponse();
+    }
+
+
     // Allows edits to be made to existing items
     @RequestMapping(path = "/edit", method = RequestMethod.POST)
-    public ResponseEntity updateCategory(@RequestBody Item item) {
+    public ResponseEntity updateItem(@RequestBody Item item) {
         JsonResponse response = new JsonResponse();
 
         String enteredItemName = item.getItemName();
         String enteredItemDescription = item.getItemDescription();
-        String enteredItemImage = item.getItemImage();
         Double enteredItemPrice = item.getItemPrice();
-        Integer enteredItemSalePercentage = item.getItemSalePercentage();
+        Integer enteredItemSalePercentage= item.getItemSalePercentage();
         Integer enteredItemStockLevel = item.getItemStockLevel();
 
-        if (!isNullOrEmpty(enteredItemName) && !isNullOrEmpty(enteredItemDescription) && !isNullOrEmpty(enteredItemImage)
-                && !enteredItemPrice.isNaN() && !isNullOrEmpty(enteredItemSalePercentage.toString())
-                && !isNullOrEmpty(enteredItemStockLevel.toString())) {
+        if(!isNullOrEmpty(enteredItemName) && !isNullOrEmpty(enteredItemDescription)
+            && !enteredItemPrice.isNaN() && !isNullOrEmpty(enteredItemSalePercentage.toString())
+            && !isNullOrEmpty(enteredItemStockLevel.toString()))
+        {
             Item existingItem = itemRepository.findItemByIdItem(item.getIdItem());
 
-            if (equals(item, existingItem)) {
+            if (equals(item, existingItem))
+            {
                 createErrorMessage(response, "No changes detected.");
-            } else {
+            }
+            else
+            {
                 // Update the existing item with the new details
                 existingItem.setItemName(enteredItemName);
                 existingItem.setItemDescription(enteredItemDescription);
-                existingItem.setItemImage(enteredItemImage);
                 existingItem.setItemPrice(enteredItemPrice);
                 existingItem.setItemSalePercentage(enteredItemSalePercentage);
                 existingItem.setItemStockLevel(enteredItemStockLevel);
@@ -338,17 +403,18 @@ public class ItemsController {
                 response.setStatus(HttpStatus.OK);
                 response.addEntity(existingItem);
             }
-        } else {
-            createErrorMessage(response, "Please resolve all input errors then try again!");
+        }
+        else
+        {
+            createErrorMessage(response,"Please resolve all input errors then try again!");
         }
 
         return response.createResponse();
     }
 
+
     // Checks whether input is null and if it is empty
-    private Boolean isNullOrEmpty(String input) {
-        return (input.isEmpty() || input.equals(null));
-    }
+    private Boolean isNullOrEmpty(String input) { return (input.isEmpty() || input.equals(null)); }
 
     // Adds an error message to a JsonResponse using the string that is specified
     private void createErrorMessage(JsonResponse response, String string) {
@@ -357,13 +423,11 @@ public class ItemsController {
     }
 
 
-    // Checks whether the new and existing category are equal (in terms of name and description)
+    // Checks whether the new and existing item are equal
     private Boolean equals(Item newItem, Item existingItem) {
         return newItem.getItemDescription().equals(existingItem.getItemDescription())
                 && newItem.getItemName().equals(existingItem.getItemName())
-                && newItem.getItemImage().equals(existingItem.getItemImage())
                 && newItem.getItemPrice() == existingItem.getItemPrice()
                 && newItem.getItemSalePercentage() == existingItem.getItemSalePercentage()
                 && newItem.getItemStockLevel() == existingItem.getItemStockLevel();
     }
-}
