@@ -4,10 +4,13 @@ import com.benchwarmers.grads.grizzlystoreitem.Data;
 import com.benchwarmers.grads.grizzlystoreitem.JsonResponse;
 import com.benchwarmers.grads.grizzlystoreitem.entities.Item;
 import com.benchwarmers.grads.grizzlystoreitem.repositories.ItemRepository;
+import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.json.JSONObject;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -65,10 +68,37 @@ public class ItemsController
         }
     }
 
+    @RequestMapping(value = "/multiple/ids", method = RequestMethod.POST, consumes = MediaType.ALL_VALUE)
+    public ResponseEntity getMultipleItemswithIds(@RequestBody String json)
+    {
+        JsonResponse response = new JsonResponse();
+        JSONObject jsonObject = new JSONObject(json);
+        JSONArray idArray = jsonObject.getJSONArray("itemIdList");
+        List<Integer> idList = new ArrayList<>();
+        if (idArray != null) {
+            for (int i=0;i<idArray.length();i++){
+                idList.add(idArray.getInt(i));
+            }
+        }
+        for(Integer i : idList)
+        {
+            if(itemRepository.existsByIdItem(i))
+            {
+                response.addEntity(itemRepository.findItemByIdItem(i));
+            }
+        }
+        response.setStatus(HttpStatus.OK);
+        return response.createResponse();
+    }
+
 
 
     /* localhost:8080/items/page?page=0&size=5 */
-
+    @RequestMapping(path = "/page")
+    public Page<Item> getPagedItems (@RequestParam Integer size, @RequestParam Integer page) {
+        Page<Item> p = itemRepository.findAll(PageRequest.of(page, size));
+        return p;
+    }
 
     @RequestMapping(path = "/page/filtered")
     public Page<Item> searchPagedItemFromFilters(@RequestParam String name,
