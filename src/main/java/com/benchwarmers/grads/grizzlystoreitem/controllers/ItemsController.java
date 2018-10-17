@@ -2,8 +2,11 @@ package com.benchwarmers.grads.grizzlystoreitem.controllers;
 
 import com.benchwarmers.grads.grizzlystoreitem.Data;
 import com.benchwarmers.grads.grizzlystoreitem.JsonResponse;
+import com.benchwarmers.grads.grizzlystoreitem.entities.Category;
 import com.benchwarmers.grads.grizzlystoreitem.entities.Item;
+import com.benchwarmers.grads.grizzlystoreitem.repositories.CategoryRepository;
 import com.benchwarmers.grads.grizzlystoreitem.repositories.ItemRepository;
+import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.json.JSONObject;
@@ -22,16 +25,17 @@ import java.util.function.Function;
 @RestController
 @RequestMapping(path = "/items")
 @CrossOrigin
-public class ItemsController
-{
+public class ItemsController {
     @Autowired
     ItemRepository itemRepository;
 
+    @Autowired
+    CategoryRepository categoryRepository;
+
     //This function returns all items and details
     @RequestMapping("/all")
-    public ResponseEntity getAllItems()
-    {
-        JsonResponse response = new JsonResponse(); 
+    public ResponseEntity getAllItems() {
+        JsonResponse response = new JsonResponse();
 
         List<Data> items2 = new ArrayList<>();
         List<Item> items = itemRepository.findAll();
@@ -47,20 +51,16 @@ public class ItemsController
 
     //This function returns an item and all details
     @RequestMapping("/id")
-    public ResponseEntity getItemWithId(@RequestParam String itemId)
-    {
+    public ResponseEntity getItemWithId(@RequestParam String itemId) {
         Item item;
         item = itemRepository.findItemByIdItem(Integer.parseInt(itemId));
         //This checks if the id exists in the database it will return the item else it return a bad request.
-        if(!itemRepository.existsByIdItem(Integer.parseInt(itemId)))
-        {
+        if (!itemRepository.existsByIdItem(Integer.parseInt(itemId))) {
             JsonResponse response = new JsonResponse();
             response.setStatus(HttpStatus.BAD_REQUEST);
             response.addErrorMessage("Id does not exist");
             return response.createResponse();
-        }
-        else
-        {
+        } else {
             JsonResponse response = new JsonResponse();
             response.setStatus(HttpStatus.OK);
             response.addEntity(item);
@@ -92,24 +92,21 @@ public class ItemsController
     }
 
 
-
     /* localhost:8080/items/page?page=0&size=5 */
     @RequestMapping(path = "/page")
-    public Page<Item> getPagedItems (@RequestParam Integer size, @RequestParam Integer page) {
+    public Page<Item> getPagedItems(@RequestParam Integer size, @RequestParam Integer page) {
         Page<Item> p = itemRepository.findAll(PageRequest.of(page, size));
         return p;
     }
 
     @RequestMapping(path = "/page/filtered")
     public Page<Item> searchPagedItemFromFilters(@RequestParam String name,
-                                                @RequestParam String text,
-                                                @RequestParam String sortBy,
-                                                @RequestParam double minPrice,
-                                                @RequestParam double maxPrice,
-                                                @RequestParam Integer size,
-                                                @RequestParam Integer page)
-    {
-
+                                                 @RequestParam String text,
+                                                 @RequestParam String sortBy,
+                                                 @RequestParam double minPrice,
+                                                 @RequestParam double maxPrice,
+                                                 @RequestParam Integer size,
+                                                 @RequestParam Integer page) {
 
 
         List<List<Item>> combined = new ArrayList<>();
@@ -123,22 +120,20 @@ public class ItemsController
         List<Item> priceList = new ArrayList<>();
 
 
-        System.out.println("Values are " + name + " " + text + " " + sortBy + " " + minPrice + " " + maxPrice+ " ");
-        if(name.length()>0)
-        {
+        System.out.println("Values are " + name + " " + text + " " + sortBy + " " + minPrice + " " + maxPrice + " ");
+        if (name.length() > 0) {
             System.out.println("Name length is " + name.length());
             catList = itemRepository.findAllByCategory_CategoryName(name);
             combined.add(catList);
         }
-        if(text.length()>0)
-        {
+        if (text.length() > 0) {
             System.out.println("Search is " + text.length());
             searchList = itemRepository.findAllByItemNameContainsOrItemDescriptionContains(text, text);
             combined.add(searchList);
         }
 
         System.out.println("Prices are " + minPrice + " " + maxPrice);
-        if(minPrice >= 0 && maxPrice >0 && minPrice < maxPrice){
+        if (minPrice >= 0 && maxPrice > 0 && minPrice < maxPrice) {
             priceList = itemRepository.findAllByItemPriceBetween(minPrice, maxPrice);
             combined.add(priceList);
         }
@@ -159,33 +154,27 @@ public class ItemsController
 ////        }
         //Calculate min and max for the returned items
 
-        if(finalList.size()>0)
-        {
-           Item minItem = finalList
+        if (finalList.size() > 0) {
+            Item minItem = finalList
                     .stream()
                     .min(Comparator.comparing(Item::getItemPrice))
                     .orElseThrow(NoSuchElementException::new);
-           Item maxItem = finalList
+            Item maxItem = finalList
                     .stream()
                     .max(Comparator.comparing(Item::getItemPrice))
                     .orElseThrow(NoSuchElementException::new);
 
 
             //Sorting final list
-            if(sortBy.equalsIgnoreCase("lowtohigh"))
-            {
+            if (sortBy.equalsIgnoreCase("lowtohigh")) {
                 System.out.println("It was " + sortBy);
                 finalList.sort(Comparator.comparing(Item::getItemPrice));
-            }
-            else if(sortBy.equalsIgnoreCase("hightolow"))
-            {
+            } else if (sortBy.equalsIgnoreCase("hightolow")) {
                 finalList.sort(Comparator.comparing(Item::getItemPrice).reversed());
-            }
-            else{
+            } else {
                 System.out.println("It was fianlly " + sortBy);
                 finalList.sort(Comparator.comparing(Item::getItemName));
             }
-
 
 
             PagedListHolder tempPage = new PagedListHolder(finalList);
@@ -217,13 +206,13 @@ public class ItemsController
                 @Override
                 public int getSize() {
                     //Sending out minimum price
-                    return (int)minItem.getItemPrice();
+                    return (int) minItem.getItemPrice();
                 }
 
                 @Override
                 public int getNumberOfElements() {
                     //Sending out maximum price
-                    return (int)maxItem.getItemPrice();
+                    return (int) maxItem.getItemPrice();
                 }
 
                 @Override
@@ -282,7 +271,7 @@ public class ItemsController
         Page emptyPage = new PageImpl(finalList);
 
         // number of pages
-          // a List which represents the current page
+        // a List which represents the current page
 
         //Page<Item> tempPage = new PageImpl<Item>(finalList, PageRequest.of(page,size), finalList.size());
         System.out.println("finalList List size is" + finalList.size());
@@ -302,6 +291,47 @@ public class ItemsController
         }
         return common;
     }
+  
+    @RequestMapping(path = "/addItem", method = RequestMethod.POST, consumes = "multipart/form-data")
+    public ResponseEntity addNewItem(@RequestParam("file") MultipartFile file,
+                                     @RequestParam("item") String itemString,
+                                     @RequestParam("category") String itemCategory) {
+        Category category = categoryRepository.findCategoryByCategoryName(itemCategory);
+        JsonResponse response = new JsonResponse();
+        Gson g = new Gson();
+        Item item = g.fromJson(itemString, Item.class);
+        item.setCategory(category);
+        if (!file.isEmpty()) {
+            try {
+                System.out.println("POST REQUEST ACCEPTED");
+                String uploadDir = "/opt/images/grizzlystore/";
+                String filename = file.getOriginalFilename();
+                String filePath = uploadDir + filename;
+                if (!new File(uploadDir).exists()) {
+                    System.out.println("Directory does not exist");
+                    new File(uploadDir).mkdirs();
+                }
+                File dest = new File(filePath);
+                file.transferTo(dest);
+                item.setItemImage("http://bw.ausgrads.academy/images/" + filename);
+            } catch (Exception e) {
+                System.out.println(e.toString());
+                createErrorMessage(response, "Unable add item. " + e.toString());
+                return response.createResponse();
+            }
+        } else {
+            createErrorMessage(response, "Please specify a non-empty item image.");
+            return response.createResponse();
+        }
+        category.addItemToList(item);
+        categoryRepository.save(category);
+        System.out.println(itemCategory + ' ' + item.getItemName() + ' ' + item.getItemDescription() + ' '
+                + item.getItemPrice() + ' ' + item.getItemStockLevel() + ' ' + item.getItemSalePercentage());
+        response.setStatus(HttpStatus.OK);
+        response.addEntity(item);
+        return response.createResponse();
+    }
+
 
     @RequestMapping(path = "/upload", method = RequestMethod.POST)
     public ResponseEntity uploadImage(@RequestParam("idItem") String idItem, @RequestParam("file") MultipartFile file) {
@@ -401,4 +431,3 @@ public class ItemsController
                 && newItem.getItemSalePercentage() == existingItem.getItemSalePercentage()
                 && newItem.getItemStockLevel() == existingItem.getItemStockLevel();
     }
-}
