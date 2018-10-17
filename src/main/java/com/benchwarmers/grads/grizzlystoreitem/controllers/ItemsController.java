@@ -317,6 +317,7 @@ public class ItemsController
                 String filePath = uploadDir + filename;
                 if (!new File(uploadDir).exists())
                 {
+                    System.out.println("Directory does not exist");
                     new File(uploadDir).mkdirs();
                 }
                 File dest = new File(filePath);
@@ -345,14 +346,13 @@ public class ItemsController
 
         String enteredItemName = item.getItemName();
         String enteredItemDescription = item.getItemDescription();
-        String enteredItemImage = item.getItemImage();
         Double enteredItemPrice = item.getItemPrice();
         Integer enteredItemSalePercentage= item.getItemSalePercentage();
         Integer enteredItemStockLevel = item.getItemStockLevel();
 
-        if(!isNullOrEmpty(enteredItemName) && !isNullOrEmpty(enteredItemDescription) && !isNullOrEmpty(enteredItemImage)
-           && !enteredItemPrice.isNaN() && !isNullOrEmpty(enteredItemSalePercentage.toString())
-           && !isNullOrEmpty(enteredItemStockLevel.toString()))
+        if(!isNullOrEmpty(enteredItemName) && !isNullOrEmpty(enteredItemDescription)
+            && !enteredItemPrice.isNaN() && !isNullOrEmpty(enteredItemSalePercentage.toString())
+            && !isNullOrEmpty(enteredItemStockLevel.toString()))
         {
             Item existingItem = itemRepository.findItemByIdItem(item.getIdItem());
 
@@ -365,7 +365,6 @@ public class ItemsController
                 // Update the existing item with the new details
                 existingItem.setItemName(enteredItemName);
                 existingItem.setItemDescription(enteredItemDescription);
-                existingItem.setItemImage(enteredItemImage);
                 existingItem.setItemPrice(enteredItemPrice);
                 existingItem.setItemSalePercentage(enteredItemSalePercentage);
                 existingItem.setItemStockLevel(enteredItemStockLevel);
@@ -383,6 +382,7 @@ public class ItemsController
         return response.createResponse();
     }
 
+
     // Checks whether input is null and if it is empty
     private Boolean isNullOrEmpty(String input) { return (input.isEmpty() || input.equals(null)); }
 
@@ -397,7 +397,6 @@ public class ItemsController
     private Boolean equals(Item newItem, Item existingItem) {
         return newItem.getItemDescription().equals(existingItem.getItemDescription())
                 && newItem.getItemName().equals(existingItem.getItemName())
-                && newItem.getItemImage().equals(existingItem.getItemImage())
                 && newItem.getItemPrice() == existingItem.getItemPrice()
                 && newItem.getItemSalePercentage() == existingItem.getItemSalePercentage()
                 && newItem.getItemStockLevel() == existingItem.getItemStockLevel();
