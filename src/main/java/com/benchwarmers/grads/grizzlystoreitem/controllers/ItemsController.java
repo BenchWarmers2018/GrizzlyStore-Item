@@ -315,7 +315,8 @@ public class ItemsController
                 String uploadDir = "/opt/images/grizzlystore/";
                 String filename = file.getOriginalFilename();
                 String filePath = uploadDir + filename;
-                if (!new File(uploadDir).exists()) {
+                if (!new File(uploadDir).exists())
+                {
                     System.out.println("Directory does not exist");
                     new File(uploadDir).mkdirs();
                 }
