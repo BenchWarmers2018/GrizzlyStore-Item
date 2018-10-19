@@ -303,8 +303,8 @@ public class ItemsController {
         //item.setCategory(category);
         if (!file.isEmpty()) {
             try {
-                System.out.println("POST REQUEST ACCEPTED");
-                String uploadDir = "/opt/images/grizzlystore/";
+                String desktop = System.getProperty ("user.home") + "/Desktop/";
+                String uploadDir = desktop + "images/grizzlystore/";
                 String filename = file.getOriginalFilename();
                 String filePath = uploadDir + filename;
                 if (!new File(uploadDir).exists()) {
@@ -313,7 +313,7 @@ public class ItemsController {
                 }
                 File dest = new File(filePath);
                 file.transferTo(dest);
-                item.setItemImage("http://bw.ausgrads.academy/images/grizzlystore/" + filename);
+                item.setItemImage(uploadDir + filename);
             } catch (Exception e) {
                 System.out.println(e.toString());
                 createErrorMessage(response, "Unable add item. " + e.toString());
