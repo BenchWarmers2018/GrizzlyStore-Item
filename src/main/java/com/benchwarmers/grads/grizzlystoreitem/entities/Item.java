@@ -61,6 +61,7 @@ public class Item extends Data {
 
     public void setCategory(Category category) {
         this.category = category;
+        category.addItemToList(this);
     }
 
     public Integer getIdItem() {
