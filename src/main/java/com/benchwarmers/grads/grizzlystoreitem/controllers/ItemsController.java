@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.support.PagedListHolder;
 import org.springframework.data.domain.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -274,7 +275,7 @@ public class ItemsController {
         JsonResponse response = new JsonResponse();
         Gson g = new Gson();
         Item item = g.fromJson(itemString, Item.class);
-        item.setCategory(category);
+        //item.setCategory(category);
         if (!file.isEmpty()) {
             try {
                 System.out.println("POST REQUEST ACCEPTED");
@@ -305,6 +306,24 @@ public class ItemsController {
         response.addEntity(item);
         return response.createResponse();
     }
+
+    @RequestMapping(path = "/remove", method = RequestMethod.POST)
+    public ResponseEntity removeItem(@RequestBody Item item) {
+        JsonResponse response = new JsonResponse();
+        if (item != null && itemRepository.findItemByIdItem(item.getIdItem()) != null) {
+            Item removedItem = itemRepository.findItemByIdItem(item.getIdItem());
+            removedItem.getCategory().getItems().remove(removedItem);
+            itemRepository.deleteById(item.getIdItem());
+            System.out.println("DELETED");
+            response.setStatus(HttpStatus.OK);
+        }
+        else {
+            response.addErrorMessage("Invalid item object");
+            response.setStatus(HttpStatus.NOT_ACCEPTABLE);
+        }
+        return response.createResponse();
+    }
+
 
     // Allows edits to be made to existing items
     @RequestMapping(path = "/edit", method = RequestMethod.POST)
