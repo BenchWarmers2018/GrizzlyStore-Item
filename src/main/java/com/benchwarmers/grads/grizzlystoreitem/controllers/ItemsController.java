@@ -94,8 +94,10 @@ public class ItemsController {
 
     /* localhost:8080/items/page?page=0&size=5 */
     @RequestMapping(path = "/page")
-    public Page<Item> getPagedItems(@RequestParam Integer size, @RequestParam Integer page) {
-        Page<Item> p = itemRepository.findAll(PageRequest.of(page, size));
+    public Page<Item> getPagedItems (@RequestParam Integer size, @RequestParam Integer page) {
+
+        Page<Item> p = itemRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC,"itemName")));
+
         return p;
     }
 
