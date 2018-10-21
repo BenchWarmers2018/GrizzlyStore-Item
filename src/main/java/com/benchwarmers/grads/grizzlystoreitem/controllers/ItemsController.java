@@ -330,7 +330,7 @@ public class ItemsController {
         System.out.println(itemCategory + ' ' + item.getItemName() + ' ' + item.getItemDescription() + ' '
                 + item.getItemPrice() + ' ' + item.getItemStockLevel() + ' ' + item.getItemSalePercentage());
         response.setStatus(HttpStatus.OK);
-        response.addEntity(itemRepository.findItemByIdItem(item.getIdItem()));
+        response.addEntity(itemRepository.findTopByItemNameOrderByIdItemDesc(item.getItemName()));
         return response.createResponse();
     }
 
