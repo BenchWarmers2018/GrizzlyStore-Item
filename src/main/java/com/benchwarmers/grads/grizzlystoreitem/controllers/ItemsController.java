@@ -293,7 +293,7 @@ public class ItemsController {
         }
         return common;
     }
-  
+
     @RequestMapping(path = "/addItem", method = RequestMethod.POST, consumes = "multipart/form-data")
     public ResponseEntity addNewItem(@RequestParam("file") MultipartFile file,
                                      @RequestParam("item") String itemString,
@@ -337,15 +337,15 @@ public class ItemsController {
     @RequestMapping(path = "/remove", method = RequestMethod.POST)
     public ResponseEntity removeItem(@RequestBody Item item) {
         JsonResponse response = new JsonResponse();
-        if (item != null && itemRepository.findItemByIdItem(item.getIdItem()) != null) {
-            Item removedItem = itemRepository.findItemByIdItem(item.getIdItem());
-            removedItem.getCategory().getItems().remove(removedItem);
+        Item itemToDelete = itemRepository.findItemByIdItem(item.getIdItem());
+        if (itemToDelete != null) {
+            itemToDelete.getCategory().getItems().remove(itemToDelete);
             itemRepository.deleteById(item.getIdItem());
-            System.out.println("DELETED");
             response.setStatus(HttpStatus.OK);
+            response.addEntity(itemToDelete);
         }
         else {
-            response.addErrorMessage("Invalid item object");
+            response.addErrorMessage("Item does not exist!");
             response.setStatus(HttpStatus.NOT_ACCEPTABLE);
         }
         return response.createResponse();
