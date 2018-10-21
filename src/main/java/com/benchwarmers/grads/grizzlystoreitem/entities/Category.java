@@ -25,7 +25,7 @@ public class Category extends Data {
     @Column(name = "categoryDescription", nullable = false)
     private String categoryDescription;
 
-    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "category", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Item> items= new ArrayList<>();
 
     @CreationTimestamp
