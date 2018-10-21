@@ -193,6 +193,27 @@ public class CategoryController
         return response.createResponse();
     }
 
+    // Deletes a category
+    @RequestMapping(path = "/delete", method = RequestMethod.POST)
+    public ResponseEntity removeItem(@RequestBody Category category) {
+        JsonResponse response = new JsonResponse();
+
+        // Checks whether the category exists in the database
+        if (categoryRepository.findCategoryByIdCategory(category.getIdCategory()) != null)
+        {
+            categoryRepository.deleteById(category.getIdCategory());
+
+            response.setStatus(HttpStatus.OK);
+            response.addEntity(category);
+        }
+        else
+        {
+            createErrorMessage(response,"Category does not exist in the system");
+        }
+
+        return response.createResponse();
+    }
+
     // Checks whether input is null and if it is empty
     private Boolean isNullOrEmpty(String input) {
         return (input.isEmpty() || input.equals(null));
