@@ -302,7 +302,8 @@ public class ItemsController {
         JsonResponse response = new JsonResponse();
         Gson g = new Gson();
         Item item = g.fromJson(itemString, Item.class);
-        //item.setCategory(category);
+        item.setCategory(category);
+
         if (!file.isEmpty()) {
             try {
                 System.out.println("POST REQUEST ACCEPTED");
@@ -325,12 +326,15 @@ public class ItemsController {
             createErrorMessage(response, "Please specify a non-empty item image.");
             return response.createResponse();
         }
-        category.addItemToList(item);
+
+        Item savedItem = itemRepository.save(item);
+
+        category.addItemToList(savedItem);
         categoryRepository.save(category);
-        System.out.println(itemCategory + ' ' + item.getItemName() + ' ' + item.getItemDescription() + ' '
-                + item.getItemPrice() + ' ' + item.getItemStockLevel() + ' ' + item.getItemSalePercentage());
+
         response.setStatus(HttpStatus.OK);
-        response.addEntity(itemRepository.findTopByItemNameOrderByIdItemDesc(item.getItemName()));
+        response.addEntity(savedItem);
+        
         return response.createResponse();
     }
 
@@ -338,10 +342,12 @@ public class ItemsController {
     public ResponseEntity removeItem(@RequestBody Item item) {
         JsonResponse response = new JsonResponse();
         Item itemToDelete = itemRepository.findItemByIdItem(item.getIdItem());
+
         if (itemToDelete != null) {
             itemToDelete.getCategory().getItems().remove(itemToDelete);
             itemRepository.deleteById(item.getIdItem());
             response.setStatus(HttpStatus.OK);
+            response.addEntity(itemToDelete);
         }
         else {
             response.addErrorMessage("Item does not exist!");

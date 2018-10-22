@@ -24,8 +24,6 @@ public interface ItemRepository extends JpaRepository<Item, Integer> {
 
         List<Item> findAllByItemPriceBetween(double minimum, double maximum);
 
-        Item findTopByItemNameOrderByIdItemDesc(String name);
-
 
 
 
