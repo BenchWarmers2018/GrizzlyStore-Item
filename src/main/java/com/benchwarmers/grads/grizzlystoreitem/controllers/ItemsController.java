@@ -334,7 +334,7 @@ public class ItemsController {
 
         response.setStatus(HttpStatus.OK);
         response.addEntity(savedItem);
-
+        
         return response.createResponse();
     }
 
