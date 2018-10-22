@@ -302,7 +302,8 @@ public class ItemsController {
         JsonResponse response = new JsonResponse();
         Gson g = new Gson();
         Item item = g.fromJson(itemString, Item.class);
-        //item.setCategory(category);
+        item.setCategory(category);
+
         if (!file.isEmpty()) {
             try {
                 System.out.println("POST REQUEST ACCEPTED");
@@ -325,12 +326,14 @@ public class ItemsController {
             createErrorMessage(response, "Please specify a non-empty item image.");
             return response.createResponse();
         }
-        category.addItemToList(item);
+
+        Item savedItem = itemRepository.save(item);
+
+        category.addItemToList(savedItem);
         categoryRepository.save(category);
-        System.out.println(itemCategory + ' ' + item.getItemName() + ' ' + item.getItemDescription() + ' '
-                + item.getItemPrice() + ' ' + item.getItemStockLevel() + ' ' + item.getItemSalePercentage());
+
         response.setStatus(HttpStatus.OK);
-        response.addEntity(item);
+        response.addEntity(savedItem);
         return response.createResponse();
     }
 
