@@ -330,7 +330,7 @@ public class ItemsController {
         System.out.println(itemCategory + ' ' + item.getItemName() + ' ' + item.getItemDescription() + ' '
                 + item.getItemPrice() + ' ' + item.getItemStockLevel() + ' ' + item.getItemSalePercentage());
         response.setStatus(HttpStatus.OK);
-        response.addEntity(item);
+        response.addEntity(itemRepository.findTopByItemNameOrderByIdItemDesc(item.getItemName()));
         return response.createResponse();
     }
 
@@ -342,7 +342,6 @@ public class ItemsController {
             itemToDelete.getCategory().getItems().remove(itemToDelete);
             itemRepository.deleteById(item.getIdItem());
             response.setStatus(HttpStatus.OK);
-            response.addEntity(itemToDelete);
         }
         else {
             response.addErrorMessage("Item does not exist!");
