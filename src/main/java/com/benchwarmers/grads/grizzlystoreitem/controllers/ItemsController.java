@@ -96,7 +96,7 @@ public class ItemsController {
     @RequestMapping(path = "/page")
     public Page<Item> getPagedItems (@RequestParam Integer size, @RequestParam Integer page) {
 
-        Page<Item> p = itemRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC,"itemName")));
+        Page<Item> p = itemRepository.findAll(PageRequest.of(page, size, Sort.by(Sort.Direction.ASC,"itemDescription")));
 
         return p;
     }
@@ -334,6 +334,7 @@ public class ItemsController {
 
         response.setStatus(HttpStatus.OK);
         response.addEntity(savedItem);
+
         return response.createResponse();
     }
 
@@ -341,6 +342,7 @@ public class ItemsController {
     public ResponseEntity removeItem(@RequestBody Item item) {
         JsonResponse response = new JsonResponse();
         Item itemToDelete = itemRepository.findItemByIdItem(item.getIdItem());
+
         if (itemToDelete != null) {
             itemToDelete.getCategory().getItems().remove(itemToDelete);
             itemRepository.deleteById(item.getIdItem());
